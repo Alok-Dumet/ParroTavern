@@ -1,0 +1,110 @@
+.draggableBox {
+    width: 200px;
+    height: 250px;
+    min-width: 200px;
+    min-height: 250px;
+    background-color: #7b1fa2;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    cursor: move;
+    resize: both;   /* allows resizing*/
+    overflow: auto; /* shows scroll bar only when needed*/
+    box-sizing: border-box;
+    cursor: default;
+  }
+  
+  .draggableBox .uploadedImage {
+    height: 40%;
+    width: auto; /*auto adjusts to maintain aspect ratio*/
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  
+  .draggableBox .imageUploadInput {
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    margin: 10px;
+    background-color: #4b0082;
+    color: white;
+    padding: 5px 15px;              /* Adjust padding for vertical balance */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .draggableBox .imageUploadInput:hover {
+    background-color: #6a0dad;
+  }
+  
+  .draggableBox .textInput {
+    height: 40%;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    color:white;
+    border-color: #5a0099;
+    background-color: #5a0099;
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+    padding-left: 8px;
+    padding-right: 8px;
+    outline:none;
+    resize: none;
+  }
+
+  .draggableBox .textInput::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .draggableBox .textInput::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .draggableBox .textInput::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .textInput:focus {
+    outline: 2px solid white;
+    border-color: white;
+  }
+
+  .dragHandle {
+    box-sizing: border-box;
+    height:20px;
+    width: 100%;
+    background-color: #4b0082;
+    color: white;
+    padding: 0.4rem;
+    border-radius: 6px;
+    cursor: grab;
+    user-select: none;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.3s;
+  }
+
+  .dragHandle:hover {
+    background-color: #6a0dad;
+  }
+  
+  .hidden{
+    display:none;
+  }

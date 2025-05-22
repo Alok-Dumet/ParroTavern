@@ -1,0 +1,98 @@
+.LoginRegisterPage {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #6a0dad;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  flex-shrink: 1;
+}
+
+.LoginRegisterPage .login, .LoginRegisterPage .register{
+  background-color: #ffffff;
+  color: black;
+  padding: 2rem 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  text-align: center;
+}
+
+.loginRegisterParroTavernIMG{
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  top:0px;
+  max-width: 400px;
+  max-height: 400px;
+  min-width: 0;
+  /* object-fit: cover; */
+}
+
+.LoginRegisterPage h1 {
+  margin-bottom: 1rem;
+  color: #6a0dad;
+}
+
+.LoginRegisterPage form ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.LoginRegisterPage form li {
+  margin-bottom: 1rem;
+  text-align: left;
+  font-weight: bold;
+}
+
+.LoginRegisterPage input[type="text"],
+.LoginRegisterPage input[type="password"],
+.LoginRegisterPage input[type="submit"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.LoginRegisterPage input[type="submit"] {
+  background-color: #6a0dad;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.LoginRegisterPage input[type="submit"]:hover {
+  background-color: #4b0082;
+}
+
+.LoginRegisterPage h2 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
+
+.LoginRegisterPage a {
+  color: #6a0dad;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.LoginRegisterPage a:hover {
+  text-decoration: underline;
+}
+
+.LoginRegisterPage .error {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #ffdddd;
+  border-left: 5px solid #d8000c;
+  color: #a94442;
+  border-radius: 8px;
+}

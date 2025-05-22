@@ -1,0 +1,63 @@
+
+.DNDContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px; 
+  height: calc(100vh - 80px);
+  width: 100%;
+  background-color: #5a0099;
+  box-sizing: border-box;
+}
+
+.DropZoneContainer {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.DropZoneContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.DropZoneContainer::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.DropZoneContainer::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* gaps between placed objects*/
+.dropArea {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ButtonContainer {
+  display:flex;
+  position:relative;
+  bottom:0px;
+  padding: 1rem;
+  border-top: 2px solid #4b0082;
+}
+
+.uploadButton {
+  margin: 5px;
+  background-color: #4b0082;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.uploadButton:hover {
+  background-color: #6a0dad;
+}

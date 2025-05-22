@@ -1,0 +1,210 @@
+/* Whole page */
+.creationContainer {
+    display: flex;
+    margin-top: 80px;
+    min-height: calc(100vh - 80px);
+    align-items: center;
+    flex-direction: column;
+}
+
+/* The whole center column */
+.campaignCreateOptions {
+  padding: 1rem;
+  width: 60%;
+  height: 100%;
+  z-index: 100;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* error */
+.campaignCreateOptions .error{
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #ffdddd;
+  border-left: 5px solid #d8000c;
+  color: #a94442;
+  border-radius: 8px;
+}
+
+.campaignSection{
+  width: 60%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  display:flex;
+  flex-direction: column;
+  background-color:#6a0dad;
+  border-radius: 1rem;
+  align-items:center;
+  margin-bottom: 1rem;;
+}
+
+.campaignSection .previewContainer{
+  width:100%;
+  max-height:10rem;
+}
+.campaignSection .preview{
+  width:100%;
+  max-height:10rem;
+  border-radius: 1rem;
+  object-fit: cover;
+  cursor: pointer;
+  /* overflow: hidden; */
+}
+
+.campaignNameTextBox{
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.createButton, .campaignNameSubmit, .campaignNameClose {
+  background-color: #4b0082;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  /* box-shadow: 0 4px 8px rgba(0,0,0,0.4); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  transition: background-color 0.3s;
+}
+
+.createButton:hover, .campaignNameSubmit:hover, .campaignNameClose:hover{
+  background-color: #6a0dad;
+}
+
+.campaignNameSubmit, .campaignNameClose {
+  margin-top: 1rem;
+}
+
+.campaignContainer{
+  margin: 1rem;
+  padding: 0.8rem;
+  background-color: #4b0082;
+  position: relative;
+  bottom: 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.campaignContainer:hover{
+  background-color: #6a0dad;
+}
+
+.campaignContainer .deleteButton{
+  font-size: 15px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  margin: 5px;
+  padding: 5px;
+  color:white;
+  transition: background-color 0.3s;
+  background-color: red;
+  border-radius: 5px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.campaignContainer:hover .deleteButton {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.campaignContainer:hover .deleteButton:hover{
+  background-color: rgb(184, 0, 0);
+}
+
+.hidden{
+    display: none;
+  }
+
+
+
+/* Entire switch container */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 6rem;
+  height: 2rem;
+}
+
+/* make the checkbox invisible */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* switch grey background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ff0000;
+  transition: 0.2s;
+  border-radius: 2rem;
+}
+
+/* The circle */
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.4);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.slider:after {
+  content: "private";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 2.1rem;
+  bottom: 4px;
+  transition: 0.4s;
+}
+
+/*If clicked the background becomes red */
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+/*If clicked move the circle */
+input:checked + .slider:before {
+  transform: translateX(4rem);
+}
+
+input:checked + .slider:after {
+  content: "public";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 1rem;
+  bottom: 4px;
+}
