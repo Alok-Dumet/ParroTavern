@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import { fileURLToPath } from 'url';
+import multer from 'multer';
 import '../db.mjs';
 
 
@@ -11,6 +12,13 @@ const __filename = fileURLToPath(import.meta.url);
 
 //getting directory app.mjs is in
 const __dirname = path.dirname(__filename);
+
+//allows multipart file reading
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 } // 10 MB
+});
+
 
 const defaultImage = {
   data: fs.readFileSync(path.join(__dirname, '../images/thumbnail.png')),
@@ -55,19 +63,20 @@ router.get("/elements/:userName/:campaignName", async (req, res) => {
   });
 
 //Router for making a new Campaign
-router.post('/newCampaign', async (req, res) => {
+router.post('/newCampaign', upload.single('image'), async (req, res) => {
     try{
+        console.log(req.file, req.body)
         const image = req.file;
         const {campaignName, description, isPrivate} = req.body;
 
         const newCampaign = new Campaign({
             thumbNail: image ? {
-                data: Buffer.from(image.data, 'base64'),
-                contentType: image.contentType
+                data: req.file.buffer,
+                contentType: req.file.mimetype
             } : defaultImage,
             campaignName: campaignName,
             description: description,
-            privacy: isPrivate,
+            privacy: (isPrivate === "true"),
             dungeonMaster: req.user._id,
         });
         await newCampaign.save();

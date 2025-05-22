@@ -14,7 +14,13 @@ export default function Index() {
   async function fetchPublicCampaigns() {
     let res = await fetch('/publicCampaigns');
     res = await res.json();
-    setCampaigns(() => res.campaigns);
+    let processed = res.campaigns.map(campaign =>{
+      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
+      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
+      const thumbNail = URL.createObjectURL(blob);
+      return { ...campaign, thumbNail };
+    })
+    setCampaigns(() => processed);
     console.log(res.campaigns);
   }
 
@@ -49,6 +55,7 @@ export default function Index() {
               onClick={visitCampaign}
             >
               <h2>{campaign.campaignName}</h2>
+              <img src={campaign.thumbNail} className="preview"></img>
               <p>By: {campaign.dungeonMaster.userName}</p>
             </div>
           ))}

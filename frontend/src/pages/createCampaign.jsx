@@ -33,7 +33,14 @@ export default function CreateCampaign() {
   async function fetchCampaigns() {
     let res = await fetch('/myCampaigns');
     res = await res.json();
-    setCampaigns(() => res.campaigns);
+
+    let processed = res.campaigns.map(campaign =>{
+      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
+      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
+      const thumbNail = URL.createObjectURL(blob);
+      return { ...campaign, thumbNail };
+    })
+    setCampaigns(() => processed);
     console.log(res.campaigns);
   }
 
@@ -49,7 +56,6 @@ export default function CreateCampaign() {
 
     let options = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: formData,
       credentials: 'include',
     };
@@ -175,6 +181,7 @@ export default function CreateCampaign() {
               onClick={visitCampaign}
             >
               <h2>{campaign.campaignName}</h2>
+              <img src={campaign.thumbNail} className="preview"></img>
               <h2 key={campaign.campaignName} className="deleteButton" onClick={deleteCampaign}>
                 Delete
               </h2>
