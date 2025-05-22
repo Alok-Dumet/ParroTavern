@@ -2,18 +2,12 @@ import './config.mjs';
 import './db.mjs';
 import './passportConfig.mjs';
 import passport from 'passport';
-import mongoose from 'mongoose';
 import session from 'express-session';
 import {router as authRouter, isAuthenticated, campaignExists} from './routes/logRegisterAuth.mjs'
 import {router as createCampaignRouter} from './routes/createCampaign.mjs'
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-//Accessing my mongoose models
-const User = mongoose.model('User');
-const Campaign = mongoose.model('Campaign');
-const CampaignElement = mongoose.model('CampaignElement');
 
 //creating my express app
 const app = express();

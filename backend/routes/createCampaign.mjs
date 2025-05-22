@@ -89,7 +89,7 @@ router.delete("/deleteCampaign", async (req, res)=>{
     let dungeonMaster = req.user._id;
 
     try{
-        let result = await Campaign.deleteOne({campaignName: campaignName, dungeonMaster: dungeonMaster});
+        await Campaign.deleteOne({campaignName: campaignName, dungeonMaster: dungeonMaster});
         res.json({});
     }
     catch(err){

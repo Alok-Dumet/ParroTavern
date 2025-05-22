@@ -27,6 +27,12 @@
     "passport-local-mongoose": "^8.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "eslint": "^9.27.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-n": "^17.18.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.1.0",
     "nodemon": "^3.1.10"
   }
 }

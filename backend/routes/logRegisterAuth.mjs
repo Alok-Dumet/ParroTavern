@@ -19,10 +19,11 @@ const protectedPatterns = [
   /^\/myCampaigns$/,
   /^\/publicCampaigns$/,
   /^\/createCampaign$/,
-  /^\/createCampaign\/[^\/]+\/[^\/]+$/,
+  /^\/createCampaign\/[^/]+\/[^/]+$/,
   /^\/newCampaign$/,
+  /^\/deleteCampaign$/,
   /^\/save$/,
-  /^\/elements\/[^\/]+$/
+  /^\/elements\/[^/]+$/
 ];
 
 const unprotectedPatterns = [/^\/login$/, /^\/register$/];
@@ -59,7 +60,7 @@ function isAuthenticated(req, res, next){
 //If the user attempts to reach a campaign, it must be a real existing one made by a real user
 async function campaignExists(req, res, next){
   let path = req.path;
-  let pattern = /^\/createCampaign\/[^\/]+\/[^\/]+$/;
+  let pattern = /^\/createCampaign\/[^/]+\/[^/]+$/;
   if(pattern.test(path)){
     path = req.path.split("/");
     let dungeonMaster = decodeURIComponent(path[2]);
@@ -97,6 +98,7 @@ router.get("/logout", (req, res)=>{
 router.post('/register', function(req, res) {
   User.register(new User({userName:req.body.username, email:req.body.email}), req.body.password, (err, user)=>{
     if(err){
+      console.log(user);
       res.json({error: err.message});
     }
     else{
@@ -113,7 +115,8 @@ router.post('/login', function(req,res,next) {
   passport.authenticate('local', function(err,user) {
     if(user) {
       req.logIn(user, function(err) {
-      res.json({})
+      if(err) console.log(err);
+      res.json({});
       });
     } else {
       res.json({error: "Your login or password is incorrect."})
