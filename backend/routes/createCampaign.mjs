@@ -35,7 +35,7 @@ const router = express.Router();
 //Router for displaying all users campaigns
 router.get("/myCampaigns", async (req, res)=>{
     // console.log(req.user.password);
-    const campaigns = await Campaign.find({ dungeonMaster: req.user._id});
+    let campaigns = await Campaign.find({ dungeonMaster: req.user._id}).populate('dungeonMaster', 'userName');
     res.json({campaigns: campaigns});
 })
 

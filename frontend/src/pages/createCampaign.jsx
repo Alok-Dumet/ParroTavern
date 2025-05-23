@@ -2,6 +2,9 @@ import { useState } from 'react'; //allows me to track certain values and dynami
 import { useEffect } from 'react'; //allows me to run code after my components render
 import { useNavigate } from 'react-router-dom'; //alows me navigation between pages without reloading
 import TopBar from './components/topBar';
+import Preview from './components/preview';
+import Switch from './components/switch';
+import Confirmation from "./components/confirmation";
 import './css/createCampaign.css';
 import './css/layout1.css';
 
@@ -9,6 +12,8 @@ import './css/layout1.css';
 export default function CreateCampaign() {
   const [user, setUser] = useState(null);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [campaignToDelete, setCampaignToDelete] = useState(null);
   const [campaigns, setCampaigns] = useState([]);
 
   //posted information
@@ -34,12 +39,12 @@ export default function CreateCampaign() {
     let res = await fetch('/myCampaigns');
     res = await res.json();
 
-    let processed = res.campaigns.map(campaign =>{
+    let processed = res.campaigns.map((campaign) => {
       const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
       const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
       const thumbNail = URL.createObjectURL(blob);
       return { ...campaign, thumbNail };
-    })
+    });
     setCampaigns(() => processed);
     console.log(res.campaigns);
   }
@@ -69,9 +74,13 @@ export default function CreateCampaign() {
     }
   }
 
-  async function deleteCampaign(event) {
-    event.stopPropagation();
-    let campaignName = event.target.parentElement.dataset.name;
+  function deleteRequest(campaign){
+      setCampaignToDelete(campaign);
+      setDeleting(prev=>!prev);
+  }
+  
+  async function deleteCampaign(campaign) {
+    let campaignName = campaign.campaignName;
     console.log(campaignName);
 
     let options = {
@@ -81,7 +90,7 @@ export default function CreateCampaign() {
       credentials: 'include',
     };
     let res = await fetch('/deleteCampaign', options);
-    res = res.json();
+    res = await res.json();
     if (!res.error) {
       fetchCampaigns();
     } else {
@@ -145,14 +154,7 @@ export default function CreateCampaign() {
           </div>
           <div className="campaignSection">
             <h1>{'Privacy'}</h1>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={!isPrivate}
-                onChange={() => setPrivacy((prev) => !prev)}
-              />
-              <span className="slider" />
-            </label>
+            <Switch isPrivate={isPrivate} setPrivacy={setPrivacy} />
           </div>
           <input type="submit" className="campaignNameSubmit" value="Submit" />
           <input
@@ -174,20 +176,19 @@ export default function CreateCampaign() {
 
         <div className="centerContainer">
           {campaigns.map((campaign, index) => (
-            <div
+            <Preview
               key={index}
-              data-name={campaign.campaignName}
-              className="campaignContainer"
-              onClick={visitCampaign}
-            >
-              <h2>{campaign.campaignName}</h2>
-              <img src={campaign.thumbNail} className="preview"></img>
-              <h2 key={campaign.campaignName} className="deleteButton" onClick={deleteCampaign}>
-                Delete
-              </h2>
-            </div>
+              campaign={campaign}
+              visitCampaign={visitCampaign}
+              deleteRequest={deleteRequest}
+            />
           ))}
         </div>
+
+        <Confirmation message="delete Campaign" state={deleting} setState={setDeleting} action={()=>{
+          deleteCampaign(campaignToDelete);
+          setCampaignToDelete(null);
+        }}/>
 
         <div className="rightContainer"></div>
       </div>

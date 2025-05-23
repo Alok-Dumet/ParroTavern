@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import './../css/topBar.css';
+import './css/topBar.css';
 
 let pageLinks = [
   { anchor: '/profile', text: 'Profile' },

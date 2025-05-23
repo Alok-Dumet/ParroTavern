@@ -2,6 +2,7 @@ import { useState } from 'react'; //allows me to track certain values and dynami
 import { useEffect } from 'react'; //allows me to run code after my components render
 import { useNavigate } from 'react-router-dom'; //alows me navigation between pages without reloading
 import TopBar from './components/topBar';
+import Preview from './components/preview';
 import './css/index.css';
 import './css/layout1.css';
 
@@ -14,12 +15,12 @@ export default function Index() {
   async function fetchPublicCampaigns() {
     let res = await fetch('/publicCampaigns');
     res = await res.json();
-    let processed = res.campaigns.map(campaign =>{
+    let processed = res.campaigns.map((campaign) => {
       const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
       const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
       const thumbNail = URL.createObjectURL(blob);
       return { ...campaign, thumbNail };
-    })
+    });
     setCampaigns(() => processed);
     console.log(res.campaigns);
   }
@@ -47,17 +48,7 @@ export default function Index() {
 
         <div className="centerContainer">
           {campaigns.map((campaign, index) => (
-            <div
-              key={index}
-              data-dungeonmaster={campaign.dungeonMaster.userName}
-              data-name={campaign.campaignName}
-              className="campaignContainer"
-              onClick={visitCampaign}
-            >
-              <h2>{campaign.campaignName}</h2>
-              <img src={campaign.thumbNail} className="preview"></img>
-              <p>By: {campaign.dungeonMaster.userName}</p>
-            </div>
+            <Preview key={index} campaign={campaign} visitCampaign={visitCampaign} />
           ))}
         </div>
 

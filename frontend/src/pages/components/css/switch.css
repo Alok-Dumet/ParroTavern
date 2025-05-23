@@ -1,0 +1,70 @@
+/* Entire switch container */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 6rem;
+  height: 2rem;
+}
+
+/* make the checkbox invisible */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* switch grey background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ff0000;
+  transition: 0.2s;
+  border-radius: 2rem;
+}
+
+/* The circle */
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.4);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.slider:after {
+  content: "private";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 2.1rem;
+  bottom: 4px;
+  transition: 0.4s;
+}
+
+/*If clicked the background becomes red */
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+/*If clicked move the circle */
+input:checked + .slider:before {
+  transform: translateX(4rem);
+}
+
+input:checked + .slider:after {
+  content: "public";
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  left: 1rem;
+  bottom: 4px;
+}
