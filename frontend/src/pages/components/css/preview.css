@@ -7,3 +7,8 @@
   transition: filter 0.3s;
   /* overflow: hidden; */
 }
+
+.campaignContainer p:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}

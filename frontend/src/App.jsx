@@ -8,17 +8,23 @@ import Register from './pages/register.jsx';
 import CreateCampaign from './pages/createCampaign.jsx';
 import CampaignPage from './pages/campaignPage.jsx';
 
+
+import AppWrapper from './AppWrapper.jsx';
+
+
 function App() {
   return (
     <BrowserRouter>
+    <AppWrapper>
       <Routes>
         <Route path="/" element={<Index/>}/>
-        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/profile/:userName" element={<Profile/>}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/createCampaign" element={<CreateCampaign/>} />
-        <Route path="/createCampaign/:userName/:campaignName" element={<CampaignPage/>}/>
+        <Route path="/campaign/:userName/:campaignName" element={<CampaignPage/>}/>
       </Routes>
+    </AppWrapper>
     </BrowserRouter>
   );
 }

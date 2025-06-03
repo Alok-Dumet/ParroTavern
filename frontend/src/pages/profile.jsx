@@ -1,55 +1,46 @@
+import NProgress from 'nprogress';
+import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import TopBar from './components/topBar';
 import './css/profile.css';
 import './css/layout1.css';
 
 export default function Profile() {
+  const { userName } = useParams();
   const [user, setUser] = useState({ userName: 'No user', email: 'No email' });
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  //logs user out
-  async function fetchLogout(event) {
-    event.preventDefault();
-
-    let res = await fetch('/logout');
+  async function fetchSession() {
+    let res = await fetch('/userData/' + encodeURIComponent(userName));
     res = await res.json();
-    if (res.logout) {
-      navigate('/login');
-    } else {
-      console.log("we couldn't logout");
-    }
+    setUser(res.user);
   }
 
   //fetch session data
   useEffect(() => {
-    async function fetchSession() {
-      let res = await fetch('/session');
-      res = await res.json();
-      setUser(res.user);
+    async function loadData() {
+      await fetchSession();
+      NProgress.done();
     }
-    fetchSession();
-  }, []);
+    loadData();
+  }, [location]);
 
-  let header = 'Your Profile';
   return (
     <div className="wholePage">
-      <TopBar header={header} />
+      <TopBar header={userName} />
 
       <div className="profileContainer">
-        <h1>Welcome {user.userName}</h1>
+        <h1>Welcome</h1>
         <div className="profileDetails">
           <ul>
-            <li>Username: {user.userName}</li>
-            <li>Email: {user.email}</li>
+            {Object.entries(user).map(([key, value]) => (
+              <li key={key}>
+                {key}: {value}
+              </li>
+            ))}
           </ul>
-        </div>
-
-        <div className="logout">
-          <form onSubmit={fetchLogout}>
-            <input type="submit" value="Log Out" />
-          </form>
         </div>
       </div>
     </div>

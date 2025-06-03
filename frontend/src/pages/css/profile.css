@@ -44,7 +44,7 @@
   justify-content: center;
 }
 
-.logout input[type="submit"] {
+.logout button {
   background-color: #4b0082;
   color: white;
   border: none;
@@ -56,7 +56,7 @@
   transition: background-color 0.3s;
 }
 
-.logout input[type="submit"]:hover {
+.logout button:hover {
   background-color: #6a0dad;
 }
 

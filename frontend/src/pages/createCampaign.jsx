@@ -1,16 +1,16 @@
-import { useState } from 'react'; //allows me to track certain values and dynamically change them
+import NProgress from 'nprogress';
+import { useLocation } from 'react-router-dom';
+import { useState, useRef } from 'react'; //allows me to track certain values and dynamically change them
 import { useEffect } from 'react'; //allows me to run code after my components render
-import { useNavigate } from 'react-router-dom'; //alows me navigation between pages without reloading
 import TopBar from './components/topBar';
 import Preview from './components/preview';
 import Switch from './components/switch';
-import Confirmation from "./components/confirmation";
+import Confirmation from './components/confirmation';
 import './css/createCampaign.css';
 import './css/layout1.css';
 
 //HomePage Route
 export default function CreateCampaign() {
-  const [user, setUser] = useState(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [campaignToDelete, setCampaignToDelete] = useState(null);
@@ -20,19 +20,25 @@ export default function CreateCampaign() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState('/images/preview.png');
   const [campaignName, setCampaignName] = useState('');
-  const [description, setDescription] = useState(false);
+  const [description, setDescription] = useState('');
   const [isPrivate, setPrivacy] = useState(true);
+  const [error, setError] = useState(null);
 
-  let [error, setError] = useState(null);
-  const navigate = useNavigate();
+  //files are inherrently uncontrolled, so useRef must be used instead of the value property
+  const fileInput = useRef();
+
+  //location change detection
+  const location = useLocation();
 
   function toggleCampaignCreateOptions() {
+    setImage(null);
     setCreating((prev) => !prev);
     setPreview('/images/preview.png');
-    setDescription('');
     setCampaignName('');
+    setDescription('');
     setPrivacy(true);
     setError(false);
+    fileInput.current.value = null;
   }
 
   async function fetchCampaigns() {
@@ -46,11 +52,10 @@ export default function CreateCampaign() {
       return { ...campaign, thumbNail };
     });
     setCampaigns(() => processed);
-    console.log(res.campaigns);
+    console.log('fetched campaigns');
   }
 
   async function createCampaign(event) {
-    console.log(image, 'sendeadjasdn');
     event.preventDefault();
 
     const formData = new FormData();
@@ -67,21 +72,21 @@ export default function CreateCampaign() {
     let res = await fetch('/newCampaign', options);
     res = await res.json();
     if (!res.error) {
-      toggleCampaignCreateOptions();
       fetchCampaigns();
+      toggleCampaignCreateOptions();
     } else {
       setError(res.error);
     }
+    console.log('Campaign created');
   }
 
-  function deleteRequest(campaign){
-      setCampaignToDelete(campaign);
-      setDeleting(prev=>!prev);
+  function deleteRequest(campaign) {
+    setCampaignToDelete(campaign);
+    setDeleting((prev) => !prev);
   }
-  
+
   async function deleteCampaign(campaign) {
     let campaignName = campaign.campaignName;
-    console.log(campaignName);
 
     let options = {
       method: 'DELETE',
@@ -96,11 +101,8 @@ export default function CreateCampaign() {
     } else {
       console.log('Oopsie');
     }
-  }
 
-  function visitCampaign(event) {
-    const name = encodeURIComponent(event.currentTarget.dataset.name);
-    navigate('/createCampaign/' + user.userName + '/' + name);
+    console.log('campaign deleted');
   }
 
   function handleFileChange(e) {
@@ -112,25 +114,29 @@ export default function CreateCampaign() {
   }
 
   useEffect(() => {
-    async function fetchSession() {
-      let res = await fetch('/session');
-      res = await res.json();
-      setUser(res.user);
+    async function loadData() {
+      await fetchCampaigns();
+      NProgress.done();
     }
-    fetchCampaigns();
-    fetchSession();
-  }, []);
 
-  let header = 'Your Campaigns';
+    loadData();
+  }, [location]);
+
   return (
     <div className="wholePage">
-      <TopBar header={header} />
+      <TopBar header={'Your Campaigns'} />
 
       <div className={creating ? 'creationContainer' : 'hidden'}>
         <form className="campaignCreateOptions" onSubmit={createCampaign}>
           <div className="campaignSection">
             <label className="previewContainer">
-              <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInput}
+                onChange={handleFileChange}
+                className="hidden"
+              />
               {preview && <img className="preview" src={preview} />}
             </label>
           </div>
@@ -140,6 +146,7 @@ export default function CreateCampaign() {
               type="text"
               className="campaignNameTextBox"
               placeholder="Your Story Begins Here!"
+              value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
             />
           </div>
@@ -149,6 +156,7 @@ export default function CreateCampaign() {
               type="text"
               className="campaignNameTextBox"
               placeholder="Let viewers get a rough idea of your story!"
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
@@ -174,21 +182,21 @@ export default function CreateCampaign() {
           </button>
         </div>
 
+        <Confirmation
+          message="delete Campaign"
+          state={deleting}
+          setState={setDeleting}
+          action={() => {
+            deleteCampaign(campaignToDelete);
+            setCampaignToDelete(null);
+          }}
+        />
+
         <div className="centerContainer">
           {campaigns.map((campaign, index) => (
-            <Preview
-              key={index}
-              campaign={campaign}
-              visitCampaign={visitCampaign}
-              deleteRequest={deleteRequest}
-            />
+            <Preview key={index} campaign={campaign} deleteRequest={deleteRequest} />
           ))}
         </div>
-
-        <Confirmation message="delete Campaign" state={deleting} setState={setDeleting} action={()=>{
-          deleteCampaign(campaignToDelete);
-          setCampaignToDelete(null);
-        }}/>
 
         <div className="rightContainer"></div>
       </div>

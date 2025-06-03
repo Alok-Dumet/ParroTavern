@@ -5,6 +5,6 @@ import App from './App.jsx'
 //Creates the root element that react will take over, creating a virtual DOM
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+      <App />
   </StrictMode>,
 )

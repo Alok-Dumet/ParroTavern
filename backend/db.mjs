@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import slug from 'mongoose-slug-updater'
+import slug from 'mongoose-slug-updater';
 import passportLocalMongoose from 'passport-local-mongoose';
 
 //lets me use slugs
@@ -9,34 +9,39 @@ mongoose.plugin(slug);
 const UserSchema = mongoose.Schema({
   userName: {
     type: String,
-    unique: true,  //I need to add a custom error message for this later
-    minLength:[5, "Username must be atleast 5 characters long"],
-    maxLength: [36, "Username cannot be greater than 36 characters"],
-    required:[true, "Username is required"]
+    unique: true, //I need to add a custom error message for this later
+    minLength: [5, 'Username must be atleast 5 characters long'],
+    maxLength: [36, 'Username cannot be greater than 36 characters'],
+    required: [true, 'Username is required'],
   },
   email: {
-    type:String, minLength:[3, "Email must be a valid"],
+    type: String,
+    minLength: [3, 'Email must be a valid'],
     // validate: {validator}, //later implement validation to check if it has @ in it
-    required:[true, "Email is required"]
+    required: [true, 'Email is required'],
   },
   cashApp: {
-    type:String,     //not safe fake links can be added but IDK how to implement link validation
+    type: String, //not safe fake links can be added but IDK how to implement link validation
   },
-  socialMedia: [{
-    type:String,     //not safe fake links can be added but IDK how to implement link validation
-    required:[true, "DO NOT ADD AN EMPTY WEBSITE"]
-  }],
-  campaigns: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Campaign",
-    required: [true, "DO NOT ADD AN EMPTY CAMPAIGN"]
-  }],
-  slug:{
+  socialMedia: [
+    {
+      type: String, //not safe fake links can be added but IDK how to implement link validation
+      required: [true, 'DO NOT ADD AN EMPTY WEBSITE'],
+    },
+  ],
+  campaigns: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Campaign',
+      required: [true, 'DO NOT ADD AN EMPTY CAMPAIGN'],
+    },
+  ],
+  slug: {
     type: String,
-    slug: "userName",
+    slug: 'userName',
     unique: true,
-    slugPaddingSize: 10
-  }
+    slugPaddingSize: 10,
+  },
 });
 
 //Campaign that has a name, renown (an upvote mechanic), password, and creator
@@ -45,51 +50,55 @@ const UserSchema = mongoose.Schema({
 //DungeonMaster does not need a password. Players are identified by logging in and have edit permissions on CampaignElements the DungeonMaster allows them to have
 //People who renown the campaign are tracked so that the same person cannot give multiple renown to a single campaign and so they can unlike later if they wish
 const CampaignSchema = mongoose.Schema({
-  thumbNail:{
+  thumbNail: {
     data: Buffer,
-    contentType: String 
+    contentType: String,
   },
   campaignName: {
     type: String,
-    maxLength: [69, "Name cannot be greater than 69 characters"],
-    required:[true, "Campaign Name is required"]
+    maxLength: [69, 'Name cannot be greater than 69 characters'],
+    required: [true, 'Campaign Name is required'],
   },
-  dungeonMaster:{
+  dungeonMaster: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: [true, "Error Occured Assigning Dungeon Master. There Should Be A Dungeon Master"]
+    ref: 'User',
+    required: [true, 'Error Occured Assigning Dungeon Master. There Should Be A Dungeon Master'],
   },
-  privacy:{
+  privacy: {
     type: Boolean,
-    required: true
-    },
-  description: {
-    type:String,
-    maxLength:[420, "Description cannot be greater than 420 characters"]
+    required: true,
   },
-  mainStory:{
+  description: {
     type: String,
-      },
+    maxLength: [420, 'Description cannot be greater than 420 characters'],
+  },
+  mainStory: {
+    type: String,
+  },
   // tags: [{
   //   type: String,
   //   maxLength: [20, "Tag cannot be greater than 20 characters"]
   // }],
-  players: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: [true, "DO NOT ADD AN EMPTY USER"]
-  }],
-  campaignElements: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "CampaignElement",
-    required: [true, "DO NOT ADD AN EMPTY CAMPAIGNELEMENT"]
-  }],
-  slug:{
+  players: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'DO NOT ADD AN EMPTY USER'],
+    },
+  ],
+  campaignElements: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CampaignElement',
+      required: [true, 'DO NOT ADD AN EMPTY CAMPAIGNELEMENT'],
+    },
+  ],
+  slug: {
     type: String,
-    slug: "campaignName",
+    slug: 'campaignName',
     unique: true,
-    slugPaddingSize: 10
-  }
+    slugPaddingSize: 10,
+  },
 });
 
 //Every campaign made by a specific person has to have a unique name
@@ -109,7 +118,7 @@ const CampaignElementSchema = mongoose.Schema({
   elementOrder: {
     type: Number,
     required: [true, 'Box must have an order value'],
-  }
+  },
   // elementType: {
   //   type: String,
   //   enum: ["item", "location", "character", "enemy", "player"],
@@ -142,19 +151,20 @@ const CampaignElementSchema = mongoose.Schema({
 
 //Extends my User model to have methods from passportLocalMongoose. These include User.authenticate/serialize/deserialize/register
 //specify my username field as userName (I'm just making things inconvenient for myself because I like camelCase)
-UserSchema.plugin(passportLocalMongoose, {usernameField: "userName"});
+UserSchema.plugin(passportLocalMongoose, { usernameField: 'userName' });
 
 //my models
-mongoose.model("User", UserSchema);
-mongoose.model("Campaign", CampaignSchema);
-mongoose.model("CampaignElement", CampaignElementSchema);
+mongoose.model('User', UserSchema);
+mongoose.model('Campaign', CampaignSchema);
+mongoose.model('CampaignElement', CampaignElementSchema);
 
 //my connection string
-mongoose.connect(process.env.DSN ?? "mongodb://127.0.0.1:27017/LocalParroTavern")
-.then(()=>{
-  console.log("Connected to Mongo server")
-})
-.catch((err)=>{
-  console.log(err.message);
-  process.exit(1);
-});
+mongoose
+  .connect(process.env.DSN ?? 'mongodb://127.0.0.1:27017/LocalParroTavern')
+  .then(() => {
+    console.log('Connected to Mongo server');
+  })
+  .catch((err) => {
+    console.log(err.message);
+    process.exit(1);
+  });

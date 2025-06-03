@@ -1,11 +1,39 @@
-import js from "@eslint/js";
-import globals from "globals";
-import pluginReact from "eslint-plugin-react";
-import { defineConfig } from "eslint/config";
-
+import js from '@eslint/js';
+import globals from 'globals';
+import pluginReact from 'eslint-plugin-react';
+import pluginPrettier from 'eslint-plugin-prettier';
+import prettier from 'eslint-config-prettier';
+import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,jsx}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.{js,mjs,cjs,jsx}"], languageOptions: { globals: {...globals.browser, ...globals.node} } },
-  pluginReact.configs.flat.recommended,
+  {
+    ignores: ['node_modules', 'dist'],
+  },
+  {
+    files: ['**/*.{js,jsx,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    plugins: {
+      react: pluginReact,
+      prettier: pluginPrettier,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      ...pluginReact.configs.recommended.rules,
+
+      // Prettier formatting
+      'prettier/prettier': 'error',
+
+      // Optional: tweak rules
+      'react/react-in-jsx-scope': 'off',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    },
+  },
+  prettier, // disables conflicting ESLint formatting rules
 ]);

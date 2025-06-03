@@ -30,3 +30,14 @@ body {
 .hidden{
     display: none;
   }
+
+/* load bar */
+#nprogress .bar {
+  background: yellow !important;
+  height: 5px !important;
+}
+
+/* shadow */
+#nprogress .peg {
+  box-shadow: 0 0 5px yellow, 0 0 2.5px yellow !important; 
+}
