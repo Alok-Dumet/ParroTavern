@@ -10,5 +10,17 @@ export default defineConfig({
           changeOrigin: true
       },
       }
+  },
+  build: {
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress only this specific warning
+        if (
+          warning.message.includes('PURE')
+        ) return;
+
+        warn(warning); // default warning handler
+      }
+    }
   }
 })

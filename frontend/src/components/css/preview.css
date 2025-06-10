@@ -1,0 +1,67 @@
+.campaignContainer{
+  margin: 1rem;
+  padding: 0.8rem;
+  background-color: #4b0082;
+  position: relative;
+  border-radius: 1rem;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.campaignContainer:hover{
+  background-color: #6a0dad;
+}
+
+.campaignContainer .deleteButton{
+  font-size: 15px;
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+  margin: 5px;
+  padding: 5px;
+  color:white;
+  transition: background-color 0.3s;
+  background-color: red;
+  border-radius: 5px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+.campaignContainer:hover .deleteButton {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.campaignContainer:hover .deleteButton:hover{
+  background-color: rgb(184, 0, 0);
+}
+
+.campaignContainer h2{
+  margin:0rem;
+  margin-left: 0.3rem;
+}
+
+.campaignContainer p{
+  margin:0rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0.7rem;
+  width: fit-content;
+}
+
+.campaignContainer p:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.preview{
+  width:100%;
+  height:100%;
+  border-radius: 1rem;
+  object-fit: cover;
+  cursor: pointer;
+  transition: filter 0.3s;
+  /* overflow: hidden; */
+}

@@ -17,6 +17,11 @@ import { fileURLToPath } from 'url';
 //creating my express app
 const app = express();
 
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
 //getting file path to app.mjs
 const __filename = fileURLToPath(import.meta.url);
 

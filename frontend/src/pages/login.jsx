@@ -17,7 +17,6 @@ export default function Login() {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ username: username, password: password }),
-      credentials: 'include',
     };
 
     let res = await fetch('/login', options);

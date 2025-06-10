@@ -2,8 +2,8 @@ import NProgress from 'nprogress';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react'; //allows me to track certain values and dynamically change them
 import { useEffect } from 'react'; //allows me to run code after my components render
-import TopBar from './components/topBar';
-import Preview from './components/preview';
+import TopBar from '../components/topBar';
+import Preview from '../components/preview';
 import './css/index.css';
 import './css/layout1.css';
 

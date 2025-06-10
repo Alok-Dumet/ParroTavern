@@ -14,17 +14,21 @@ body {
   
 .leftContainer,
 .rightContainer {
+    position: relative;
     width: 20%;
     background-color: #5a0099;
     padding: 1rem;
     box-sizing: border-box;
+    overflow:hidden
 }
   
 .centerContainer {
+    position: relative;
     width: 60%;
     background-color: #7b1fa2;
     padding: 1rem;
     box-sizing: border-box;
+    overflow:auto;
 }
 
 .hidden{

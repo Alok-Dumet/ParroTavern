@@ -24,8 +24,8 @@ export default function Preview({ campaign, deleteRequest }) {
       onClick={visitCampaign}
     >
       <h2>{campaign.campaignName}</h2>
-      <img src={campaign.thumbNail} className="preview"></img>
       <p onClick={handleClick}>By: {campaign.dungeonMaster.userName}</p>
+      <img src={campaign.thumbNail} className="preview"></img>
       {deleteRequest && (
         <h2
           key={campaign.campaignName}

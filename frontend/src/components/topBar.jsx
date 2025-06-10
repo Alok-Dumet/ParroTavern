@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Confirmation from './confirmation';
+import { useUser } from '../AppWrapper';
 import './css/topBar.css';
 
 let pageLinks = [
@@ -14,16 +15,10 @@ export default function TopBar({ header, username }) {
   const navigate = useNavigate();
   const [hidden, setHidden] = useState(false);
   const [loggingOut, setLogOut] = useState(false);
+  const { user, setUser } = useUser();
 
   function toggleSidebar() {
     setHidden((prev) => !prev);
-  }
-
-  async function handleClick() {
-    let res = await fetch('/session');
-    res = await res.json();
-    console.log('/profile/' + encodeURIComponent(res.user.userName));
-    navigate('/profile/' + encodeURIComponent(res.user.userName));
   }
 
   //logs user out
@@ -31,6 +26,7 @@ export default function TopBar({ header, username }) {
     let res = await fetch('/logout');
     res = await res.json();
     if (res.logout) {
+      setUser(null);
       navigate('/login');
     } else {
       console.log("we couldn't logout");
@@ -68,7 +64,10 @@ export default function TopBar({ header, username }) {
         {pageLinks.map((link, index) => {
           if (link.anchor === '/profile') {
             return (
-              <div key={index} onClick={() => handleClick()}>
+              <div
+                key={index}
+                onClick={() => navigate('/profile/' + encodeURIComponent(user.userName))}
+              >
                 {link.text}
               </div>
             );

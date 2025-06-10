@@ -2,10 +2,10 @@ import NProgress from 'nprogress';
 import { useLocation } from 'react-router-dom';
 import { useState, useRef } from 'react'; //allows me to track certain values and dynamically change them
 import { useEffect } from 'react'; //allows me to run code after my components render
-import TopBar from './components/topBar';
-import Preview from './components/preview';
-import Switch from './components/switch';
-import Confirmation from './components/confirmation';
+import TopBar from '../components/topBar';
+import Preview from '../components/preview';
+import Switch from '../components/switch';
+import Confirmation from '../components/confirmation';
 import './css/createCampaign.css';
 import './css/layout1.css';
 
@@ -24,7 +24,8 @@ export default function CreateCampaign() {
   const [isPrivate, setPrivacy] = useState(true);
   const [error, setError] = useState(null);
 
-  //files are inherrently uncontrolled, so useRef must be used instead of the value property
+  //files are inherrently uncontrolled
+  //so useRef must be used instead of useState and value to reset it to none
   const fileInput = useRef();
 
   //location change detection
@@ -67,7 +68,6 @@ export default function CreateCampaign() {
     let options = {
       method: 'POST',
       body: formData,
-      credentials: 'include',
     };
     let res = await fetch('/newCampaign', options);
     res = await res.json();
@@ -92,7 +92,6 @@ export default function CreateCampaign() {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ campaignName: campaignName }),
-      credentials: 'include',
     };
     let res = await fetch('/deleteCampaign', options);
     res = await res.json();

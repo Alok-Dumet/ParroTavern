@@ -1,28 +1,70 @@
+.moveable-line, .moveable-origin{
+  display: none;
+}
+
+.moveable-control{
+  opacity: 0
+}
+
 .draggableBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    position: absolute;
     width: 200px;
     height: 250px;
     min-width: 200px;
     min-height: 250px;
     background-color: #7b1fa2;
-    margin: 10px;
-    padding: 10px;
+    padding: 0.5rem;
     border-radius: 10px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    align-items: center;
-    cursor: move;
-    resize: both;   /* allows resizing*/
-    overflow: auto; /* shows scroll bar only when needed*/
+    border: 0.5rem solid #4b0082;
+    border-top: 1rem solid #4b0082;
     box-sizing: border-box;
     cursor: default;
+  }
+
+  .boxButtons{
+    display:flex;
+    position: absolute;
+    top: -1rem;
+    right: 0rem;
+  }
+
+  .closeButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:0.7rem;
+    width: 2rem;
+    padding-bottom: 0.3rem;
+    background-color: #4b0082;
+  }
+
+   .editButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:0.4rem;
+    width: 2rem;
+    padding-bottom: 0.6rem;
+    background-color: #4b0082;
+  }
+
+  .closeButton:hover{
+    background-color:red;
+  }
+
+  .editButton:hover{
+    background-color: #6a0dad
   }
   
   .draggableBox .uploadedImage {
     height: 40%;
     width: auto; /*auto adjusts to maintain aspect ratio*/
     max-width: 100%;
+    margin-bottom: 0.5rem;
     box-sizing: border-box;
     border-radius: 10px;
   }
@@ -33,7 +75,7 @@
     justify-content: center;
     align-items: center;
     height: 20px;
-    margin: 10px;
+    margin: 0rem 1rem 0.5rem 1rem;
     background-color: #4b0082;
     color: white;
     padding: 5px 15px;              /* Adjust padding for vertical balance */
@@ -47,7 +89,7 @@
   }
   
   .draggableBox .textInput {
-    height: 40%;
+    height: 100%;
     width: 100%;
     max-width: 100%;
     border-radius: 10px;
@@ -64,45 +106,25 @@
     resize: none;
   }
 
-  .draggableBox .textInput::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-  }
-
-  .draggableBox .textInput::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  .draggableBox .textInput::-webkit-scrollbar-thumb {
-    background-color: white;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-  }
-
   .textInput:focus {
     outline: 2px solid white;
     border-color: white;
   }
 
-  .dragHandle {
-    box-sizing: border-box;
-    height:20px;
-    width: 100%;
-    background-color: #4b0082;
-    color: white;
-    padding: 0.4rem;
-    border-radius: 6px;
-    cursor: grab;
-    user-select: none;
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    transition: background-color 0.3s;
+  .draggableBox .textInput::-webkit-scrollbar-track, .draggableBox::-webkit-scrollbar-track{
+    background: transparent;
+    border-radius: 10px;
   }
 
-  .dragHandle:hover {
-    background-color: #6a0dad;
+  .draggableBox .textInput::-webkit-scrollbar, .draggableBox::-webkit-scrollbar{
+    width: 10px;
+  }
+  
+  .draggableBox .textInput::-webkit-scrollbar-thumb, .draggableBox::-webkit-scrollbar-thumb{
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
   
   .hidden{

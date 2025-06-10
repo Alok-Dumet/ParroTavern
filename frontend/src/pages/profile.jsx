@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import TopBar from './components/topBar';
+import TopBar from '../components/topBar';
 import './css/profile.css';
 import './css/layout1.css';
 

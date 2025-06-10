@@ -18,7 +18,6 @@ export default function Register() {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ username: username, password: password, email: email }),
-      credentials: 'include',
     };
 
     let res = await fetch('/register', options);
