@@ -56,10 +56,11 @@ export default function DraggableBox({ zIndex, onClick }) {
         dragTarget={containerRef}
         onClick={(e) => {
           const tagName = e.inputEvent.target.tagName.toLowerCase();
-          if (['textarea', 'input', 'select', 'button', 'label'].includes(tagName)) {
+          const className = e.inputEvent.target.className.toLowerCase();
+          if (['textarea', 'input', 'select', 'button', 'label'].includes(tagName) || ["closeButton", "editButton"].includes(className)) {
             e.inputEvent.target.focus();
           }
-          console.log(e.inputEvent.target, e.target)
+          console.log(tagName, className)
         }}
         onDrag={({left, top }) => {
           const container = containerRef.current;
