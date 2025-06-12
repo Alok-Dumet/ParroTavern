@@ -67,7 +67,7 @@ export default function Login() {
         <h2>
           Don't Have an Account? <Link to="/register"> Register</Link>
         </h2>
-        <div className={error ? 'error' : 'hidden'}>{error}</div>
+        {error && <div className='error'> {error} </div>}
       </div>
     </div>
   );

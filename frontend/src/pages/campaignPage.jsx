@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom'; //allows me to use the parameters in the url
 import './css/layout1.css';
 import TopBar from '../components/topBar';
-import DraggableBox from '../components/DraggableBox';
+import DraggableBox from '../components/draggableBox';
 
 //HomePage Route
 export default function CampaignPage() {

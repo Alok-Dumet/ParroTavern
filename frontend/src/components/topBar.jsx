@@ -60,7 +60,7 @@ export default function TopBar({ header, username }) {
         action={fetchLogout}
       />
 
-      <div className={hidden ? 'sideBar' : 'hidden'}>
+      {hidden && <div className='sideBar'>
         {pageLinks.map((link, index) => {
           if (link.anchor === '/profile') {
             return (
@@ -85,7 +85,7 @@ export default function TopBar({ header, username }) {
             );
           }
         })}
-      </div>
+      </div>}
     </>
   );
 }

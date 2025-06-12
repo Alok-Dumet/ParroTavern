@@ -125,7 +125,7 @@ export default function CreateCampaign() {
     <div className="wholePage">
       <TopBar header={'Your Campaigns'} />
 
-      <div className={creating ? 'creationContainer' : 'hidden'}>
+      {creating && <div className='creationContainer'>
         <form className="campaignCreateOptions" onSubmit={createCampaign}>
           <div className="campaignSection">
             <label className="previewContainer">
@@ -170,11 +170,11 @@ export default function CreateCampaign() {
             value="Cancel"
             onClick={toggleCampaignCreateOptions}
           />
-          <div className={error ? 'error' : 'hidden'}> {error} </div>
+          {error && <div className='error'> {error} </div>}
         </form>
-      </div>
+      </div>}
 
-      <div className={!creating ? 'mainContainer' : 'hidden'}>
+      {!creating && <div className='mainContainer'>
         <div className="leftContainer">
           <button className="createButton" onClick={toggleCampaignCreateOptions}>
             Create
@@ -198,7 +198,7 @@ export default function CreateCampaign() {
         </div>
 
         <div className="rightContainer"></div>
-      </div>
+      </div>}
     </div>
   );
 }

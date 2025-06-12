@@ -58,6 +58,7 @@ input:checked + .slider {
 /*If clicked move the circle */
 input:checked + .slider:before {
   transform: translateX(4rem);
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider:after {

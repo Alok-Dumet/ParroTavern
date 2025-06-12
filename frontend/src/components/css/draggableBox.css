@@ -7,11 +7,13 @@
 }
 
 .draggableBox {
+    top: 30vh;
+    left: 30vw;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
-    position: absolute;
     width: 200px;
     height: 250px;
     min-width: 200px;
@@ -23,6 +25,8 @@
     border-top: 1rem solid #4b0082;
     box-sizing: border-box;
     cursor: default;
+
+    gap: 0.5rem;
   }
 
   .boxButtons{
@@ -60,13 +64,23 @@
     background-color: #6a0dad
   }
   
-  .draggableBox .uploadedImage {
+  .draggableBox .imageLabel{
     height: 40%;
     width: auto; /*auto adjusts to maintain aspect ratio*/
     max-width: 100%;
-    margin-bottom: 0.5rem;
     box-sizing: border-box;
+  }
+
+  .draggableBox .uploadedImage {
     border-radius: 10px;
+    height:100%;
+    width:100%;
+    box-sizing: border-box;
+    transition: filter 0.3s;
+  }
+
+  .draggableBox .uploadedImage:hover{
+    filter: brightness(85%)
   }
   
   .draggableBox .imageUploadInput {
@@ -75,7 +89,6 @@
     justify-content: center;
     align-items: center;
     height: 20px;
-    margin: 0rem 1rem 0.5rem 1rem;
     background-color: #4b0082;
     color: white;
     padding: 5px 15px;              /* Adjust padding for vertical balance */
