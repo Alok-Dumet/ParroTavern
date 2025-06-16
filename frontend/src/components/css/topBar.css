@@ -67,6 +67,14 @@
   flex-direction: column;
   gap: 1rem;
   z-index: 900;
+ 
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.5s;
+}
+
+.sideBar.visible {
+  max-height: 10rem;
 }
 
 .sideBar a {

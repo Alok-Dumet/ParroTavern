@@ -80,7 +80,8 @@
   }
 
   .draggableBox .uploadedImage:hover{
-    filter: brightness(85%)
+    filter: brightness(85%);
+    cursor: pointer;
   }
   
   .draggableBox .imageUploadInput {
