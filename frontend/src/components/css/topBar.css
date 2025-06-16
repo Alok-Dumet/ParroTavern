@@ -61,7 +61,6 @@
   width: 200px;
   background-color: #53008f; 
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
   padding-top: 1rem;
   text-align: center;
   flex-direction: column;
@@ -75,6 +74,7 @@
 
 .sideBar.visible {
   max-height: 10rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
 }
 
 .sideBar a {
