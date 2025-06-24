@@ -9,7 +9,7 @@ body {
 .mainContainer {
     display: flex;
     margin-top: 80px;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh);
 }
   
 .leftContainer,
@@ -30,6 +30,20 @@ body {
     box-sizing: border-box;
     overflow:auto;
 }
+
+  .centerContainer::-webkit-scrollbar-track{
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .centerContainer::-webkit-scrollbar{
+    background: transparent;
+  }
+  
+  .centerContainer::-webkit-scrollbar-thumb{
+    background-color: white;
+    border-radius: 10px;
+  }
 
 .hidden{
     display: none;

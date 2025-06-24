@@ -23,6 +23,8 @@ export default function CampaignPage() {
 
         <div className="centerContainer">
           <DraggableBox />
+          <DraggableBox />
+          <DraggableBox />
         </div>
 
         <div className="rightContainer"></div>

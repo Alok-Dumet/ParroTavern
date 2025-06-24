@@ -13,7 +13,7 @@ let pageLinks = [
 
 export default function TopBar({ header, username }) {
   const navigate = useNavigate();
-  const [hidden, setHidden] = useState(false);
+  const [hidden, setHidden] = useState(true);
   const [loggingOut, setLogOut] = useState(false);
   const { user, setUser } = useUser();
   const sideBar = useRef();
@@ -38,8 +38,8 @@ export default function TopBar({ header, username }) {
 
   useEffect(()=>{
     function clickOutside(event){
-      if (hidden && !sideBar.current.contains(event.target) && !icon.current.contains(event.target)) {
-        setHidden(false); // Close sidebar if clicking outside of it
+      if (!hidden && !sideBar.current.contains(event.target) && !icon.current.contains(event.target)) {
+        setHidden(true); // Close sidebar if clicking outside of it
       }
     }
     document.addEventListener("mousedown", clickOutside);
@@ -56,9 +56,9 @@ export default function TopBar({ header, username }) {
         <div className="campaignIdentityContainer">
           <h1>{header}</h1>
           {username && (
-            <Link to={'/profile/' + encodeURIComponent(username)} className="user">
+            <div onClick={()=>navigate('/profile/' + encodeURIComponent(username))} className="user">
               {'Dungeon Master: ' + username}
-            </Link>
+            </div>
           )}
         </div>
         <img
@@ -77,7 +77,7 @@ export default function TopBar({ header, username }) {
         action={fetchLogout}
       />
 
-      <div className={`sideBar ${hidden ? 'visible' : ''}`} ref={sideBar}>
+      <div className={`sideBar ${!hidden ? 'visible' : ''}`} ref={sideBar}>
         {pageLinks.map((link, index) => {
           if (link.anchor === '/profile') {
             return (
@@ -96,9 +96,9 @@ export default function TopBar({ header, username }) {
             );
           } else {
             return (
-              <Link key={index} to={link.anchor}>
+              <div key={index} onClick={()=>navigate(link.anchor)}>
                 {link.text}
-              </Link>
+              </div>
             );
           }
         })}

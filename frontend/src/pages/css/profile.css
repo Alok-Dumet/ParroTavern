@@ -7,6 +7,19 @@
   min-height: calc(100vh - 80px);
 }
 
+.profileContainer::after{
+  content: "ParroTavern Rules Privacy Policy User Agreement ParroTavern, Inc. © 2025. All rights reserved.";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: -3rem;
+  left: 0px;
+  height: 6rem;
+  width: 100%;
+  background-color: #4b0082; 
+}
+
 .profileContainer h1 {
   margin-top: 100px;
   font-size: 2rem;

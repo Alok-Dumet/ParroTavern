@@ -5,7 +5,7 @@ import './css/draggableBox.css';
 export default function DraggableBox({ zIndex, onClick }) {
   const containerRef = useRef();
   const [parts, setParts] = useState([{image: null}, {isText: true, text:"wazzaaap"}, {isText: true, text:"yo cuh"}, {isText: true, text:""}]);
-
+  const [active, setActive] = useState(true);
   function handleImageUpload(index, e){
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')){
@@ -20,16 +20,20 @@ export default function DraggableBox({ zIndex, onClick }) {
   function changeText(index, value){
     setParts(parts.map((item, ind) => ind === index ? {isText: true, text: value} : item));
   }
+  function closeSheet(){
+    setActive(false);
+    console.log(active);
+  }
 
   return (
     <>
-      <div
+      {active && <div
         className="draggableBox"
         ref={containerRef}
       >
         <div className="boxButtons">
           <div className="editButton">...</div>
-          <div className="closeButton">x</div>
+          <div className="closeButton" onClick={()=>closeSheet()}>x</div>
         </div>
         {
           parts.map((elem, ind)=>{
@@ -59,10 +63,10 @@ export default function DraggableBox({ zIndex, onClick }) {
             }
           })
         }
-      </div>
+      </div>}
       
 
-      <Moveable
+      {active && <Moveable
         target={containerRef}
         container={null}
         origin={true}
@@ -73,16 +77,12 @@ export default function DraggableBox({ zIndex, onClick }) {
         onDragStart={(e) => {
           const tagName = e.inputEvent.target.tagName.toLowerCase();
           const className = e.inputEvent.target.className.toLowerCase();
-          if (['textarea', 'input', 'select', 'button', 'label'].includes(tagName) || ["closeButton", "editButton"].includes(className)) {
-            e.inputEvent.target.focus();
-          }
-          else if(tagName === "img"){
-            console.log("Yippee");
-          }
+          e.inputEvent.target.focus();
           console.log(tagName, className)
         }}
-        onDrag={({target, transform}) => {
-          target.style.transform = transform;
+        onDrag={({target, left, top, transform, clientX, clientY}) => {
+          target.style.left = `${left}px`;
+          target.style.top = `${top}px`;
         }}
 
         resizable={true}
@@ -100,7 +100,8 @@ export default function DraggableBox({ zIndex, onClick }) {
           target.style.transform = `translate(${tx}px, ${ty}px)`;
 
         }}
-      />
+      />}
+
     </>
   );
 }

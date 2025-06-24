@@ -18,7 +18,7 @@
     width: 40rem;
     display:flex;
     align-items: center;
-    background-color: #6a0dad;
+    background-color: #7b1fa2;
     color:white;
     flex-direction: column;
     border-radius: 1rem;
@@ -31,7 +31,6 @@
     display:flex;
     justify-content: space-between;
     align-items: flex-end;
-    background-color: #6a0dad;
     color:white;
     border-radius: 1rem;
     padding: 1rem;

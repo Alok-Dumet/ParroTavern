@@ -69,27 +69,12 @@
  
   overflow: hidden;
   max-height: 0;
-  transition: max-height 0.5s;
+  transition: max-height 0.5s, box-shadow 0.5s ease-out;
 }
 
 .sideBar.visible {
   max-height: 10rem;
   box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-}
-
-.sideBar a {
-  padding: 0.5rem;
-  display:block;
-  color: #ffccff;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.sideBar a:hover {
-  background-color:#5a0099;
-  border-radius: 12px;
-  /* text-decoration: underline; */
 }
 
 .sideBar div{
@@ -104,7 +89,7 @@
 .sideBar div:hover{
   cursor: pointer;
   background-color:#5a0099;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   /* text-decoration: underline; */
 }
 

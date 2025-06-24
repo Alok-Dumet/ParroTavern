@@ -35,11 +35,12 @@ export default function Profile() {
         <h1>Welcome</h1>
         <div className="profileDetails">
           <ul>
-            {Object.entries(user).map(([key, value]) => (
-              <li key={key}>
-                {key}: {value}
-              </li>
-            ))}
+            <li>
+              Username: {user.userName}
+            </li>
+            <li>
+              Email: {user.email}
+            </li>
           </ul>
         </div>
       </div>
