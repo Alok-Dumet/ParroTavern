@@ -1,8 +1,8 @@
-import NProgress from 'nprogress';
 import { useLocation } from 'react-router-dom';
 import { useState, useRef } from 'react'; //allows me to track certain values and dynamically change them
 import { useEffect } from 'react'; //allows me to run code after my components render
 import TopBar from '../components/topBar';
+import {fetchCampaigns} from '../components/topBar';
 import Preview from '../components/preview';
 import Switch from '../components/switch';
 import Confirmation from '../components/confirmation';
@@ -40,20 +40,6 @@ export default function CreateCampaign() {
     setPrivacy(true);
     setError(false);
     fileInput.current.value = null;
-  }
-
-  async function fetchCampaigns() {
-    let res = await fetch('/myCampaigns');
-    res = await res.json();
-
-    let processed = res.campaigns.map((campaign) => {
-      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
-      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
-      const thumbNail = URL.createObjectURL(blob);
-      return { ...campaign, thumbNail };
-    });
-    setCampaigns(() => processed);
-    console.log('fetched campaigns');
   }
 
   async function createCampaign(event) {
@@ -114,10 +100,17 @@ export default function CreateCampaign() {
 
   useEffect(() => {
     async function loadData() {
-      await fetchCampaigns();
-      NProgress.done();
+      if (!location.state){
+        console.log("refetched")
+        let campaigns = await fetchCampaigns();
+        setCampaigns(campaigns);
+      }
+      else{
+        console.log("from navigate")
+        setCampaigns(location.state.data);
+        window.history.replaceState({}, '')
+      }
     }
-
     loadData();
   }, [location]);
 

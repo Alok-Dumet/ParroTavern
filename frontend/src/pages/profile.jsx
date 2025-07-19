@@ -9,7 +9,7 @@ import './css/layout1.css';
 
 export default function Profile() {
   const { userName } = useParams();
-  const [user, setUser] = useState({ userName: 'No user', email: 'No email' });
+  const [user, setUser] = useState({ userName: '', email: '' });
   const location = useLocation();
 
   async function fetchSession() {
@@ -22,7 +22,6 @@ export default function Profile() {
   useEffect(() => {
     async function loadData() {
       await fetchSession();
-      NProgress.done();
     }
     loadData();
   }, [location]);

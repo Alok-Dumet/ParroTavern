@@ -6,6 +6,9 @@ import './pages/css/layout1.css';
 
 const UserContext = createContext(null);
 
+export function useUser() {
+  return useContext(UserContext);
+}
 
 //a Wrapper that lets me perform useEffect actions first before any other component can
 export default function AppWrapper({ children }) {
@@ -31,22 +34,15 @@ export default function AppWrapper({ children }) {
       speed: 400
       });
 
-      NProgress.remove();
-      NProgress.start();
-      if(!user){
-        fetchSession();
-      }
-
+      // NProgress.remove();
+      // NProgress.start();
+      if(!user) fetchSession();
     }
   }, [location]);
 
   return(
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
+    <UserContext.Provider value={{user,setUser }}>
+        {children}
     </UserContext.Provider>
   );
-}
-
-export function useUser() {
-  return useContext(UserContext);
 }
