@@ -1,39 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import NProgress from 'nprogress';
 import { useState, useEffect, useRef } from 'react';
+import {useContext } from "react";
 import Confirmation from './confirmation';
-import { useUser} from '../AppWrapper';
+import {UserContext} from "../AppWrapper";
 import './css/topBar.css';
-
-
-export async function fetchPublic(){
-  let data = await fetch("/publicCampaigns");
-  data = await data.json();
-  let processed = data.campaigns.map((campaign) => {
-    const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
-    const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
-    const thumbNail = URL.createObjectURL(blob);
-    return { ...campaign, thumbNail };
-  });
-  return processed;
-}
-
-export async function fetchCampaigns(){
-    let data = await fetch('/myCampaigns');
-    data = await data.json();
-    let processed = data.campaigns.map((campaign) => {
-      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
-      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
-      const thumbNail = URL.createObjectURL(blob);
-      return { ...campaign, thumbNail };
-    });
-  return processed;
-}
 
 let pageLinks = [
   { anchor: '/profile', text: 'Profile' },
-  { anchor: '/createCampaign', text: 'Your Campaigns', fetchFunc: fetchCampaigns },
-  { anchor: '/', text: 'Home', fetchFunc: fetchPublic},
+  { anchor: '/createCampaign', text: 'Your Campaigns'},
+  { anchor: '/', text: 'Home'},
   { anchor: '/logout', text: 'Log Out'}
 ];
 
@@ -41,7 +16,7 @@ export default function TopBar({ header, username }) {
   const navigate = useNavigate();
   const [hidden, setHidden] = useState(true);
   const [loggingOut, setLogOut] = useState(false);
-  const { user, setUser } = useUser();
+  const {user} = useContext(UserContext);
   const sideBar = useRef();
   const icon = useRef();
   const logout = useRef();
@@ -55,26 +30,11 @@ export default function TopBar({ header, username }) {
     let res = await fetch('/logout');
     res = await res.json();
     if (res.logout) {
-      setUser(null);
       navigate('/login');
     } else {
       console.log("we couldn't logout");
     }
     setLogOut((prev) => !prev);
-  }
-
-  async function nextPage(anchor, fetchFunction){
-    NProgress.remove();
-    NProgress.start()
-    if(fetchFunction){
-      let data = await fetchFunction();
-      NProgress.done();
-      navigate(anchor, {state:{data}});
-    }
-    else{
-      NProgress.done();
-      navigate(anchor);
-    }
   }
 
   useEffect(()=>{
@@ -126,7 +86,7 @@ export default function TopBar({ header, username }) {
             return (
               <div
                 key={index}
-                onClick={() => nextPage('/profile/' + encodeURIComponent(user.userName))}
+                onClick={() => navigate('/profile/' + encodeURIComponent(user.userName))}
               >
                 {link.text}
               </div>
@@ -139,7 +99,7 @@ export default function TopBar({ header, username }) {
             );
           } else{
             return (
-              <div key={index} onClick={()=>nextPage(link.anchor, link.fetchFunc)}>
+              <div key={index} onClick={()=>navigate(link.anchor)}>
                 {link.text}
               </div>
             );

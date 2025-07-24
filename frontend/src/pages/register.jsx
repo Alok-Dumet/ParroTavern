@@ -43,7 +43,7 @@ export default function Register() {
         <form onSubmit={fetchRegister}>
           <ul>
             <li>
-              username:{' '}
+              username:
               <input
                 name="username"
                 placeholder="Enter your username"
@@ -53,7 +53,7 @@ export default function Register() {
               />
             </li>
             <li>
-              password:{' '}
+              password:
               <input
                 name="password"
                 placeholder="Enter your password"
@@ -63,7 +63,7 @@ export default function Register() {
               />
             </li>
             <li>
-              email:{' '}
+              email:
               <input
                 name="email"
                 placeholder="Enter your email"

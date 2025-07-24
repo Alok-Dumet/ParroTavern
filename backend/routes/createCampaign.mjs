@@ -92,8 +92,8 @@ router.post('/newCampaign', upload.single('image'), async (req, res) => {
 
         const newCampaign = new Campaign({
             thumbNail: image ? {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
+                data: image.buffer,
+                contentType: image.mimetype
             } : defaultImage,
             campaignName: campaignName,
             description: description,

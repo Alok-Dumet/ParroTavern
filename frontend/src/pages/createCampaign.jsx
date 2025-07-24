@@ -2,12 +2,12 @@ import { useLocation } from 'react-router-dom';
 import { useState, useRef } from 'react'; //allows me to track certain values and dynamically change them
 import { useEffect } from 'react'; //allows me to run code after my components render
 import TopBar from '../components/topBar';
-import {fetchCampaigns} from '../components/topBar';
 import Preview from '../components/preview';
 import Switch from '../components/switch';
 import Confirmation from '../components/confirmation';
 import './css/createCampaign.css';
 import './css/layout1.css';
+import NProgress from 'nprogress';
 
 //HomePage Route
 export default function CreateCampaign() {
@@ -31,6 +31,18 @@ export default function CreateCampaign() {
   //location change detection
   const location = useLocation();
 
+  async function fetchCampaigns(){
+    let data = await fetch('/myCampaigns');
+    data = await data.json();
+    let processed = data.campaigns.map((campaign) => {
+      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
+      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
+      const thumbNail = URL.createObjectURL(blob);
+      return { ...campaign, thumbNail };
+    });
+    return processed;
+  }
+
   function toggleCampaignCreateOptions() {
     setImage(null);
     setCreating((prev) => !prev);
@@ -39,11 +51,13 @@ export default function CreateCampaign() {
     setDescription('');
     setPrivacy(true);
     setError(false);
-    fileInput.current.value = null;
+    if(fileInput.current) fileInput.current.value = null;
   }
 
   async function createCampaign(event) {
     event.preventDefault();
+    NProgress.remove();
+    NProgress.start();
 
     const formData = new FormData();
     formData.append('image', image);
@@ -58,12 +72,14 @@ export default function CreateCampaign() {
     let res = await fetch('/newCampaign', options);
     res = await res.json();
     if (!res.error) {
-      fetchCampaigns();
+      const reloadedData = await fetchCampaigns();
+      setCampaigns(reloadedData);
       toggleCampaignCreateOptions();
+      console.log('Campaign created');
     } else {
       setError(res.error);
     }
-    console.log('Campaign created');
+    NProgress.done();
   }
 
   function deleteRequest(campaign) {
@@ -72,6 +88,8 @@ export default function CreateCampaign() {
   }
 
   async function deleteCampaign(campaign) {
+    NProgress.remove();
+    NProgress.start();
     let campaignName = campaign.campaignName;
 
     let options = {
@@ -79,10 +97,13 @@ export default function CreateCampaign() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ campaignName: campaignName }),
     };
+
     let res = await fetch('/deleteCampaign', options);
     res = await res.json();
     if (!res.error) {
-      fetchCampaigns();
+      const reloadedData = await fetchCampaigns();
+      setCampaigns(reloadedData);
+      NProgress.done();
     } else {
       console.log('Oopsie');
     }
@@ -100,16 +121,9 @@ export default function CreateCampaign() {
 
   useEffect(() => {
     async function loadData() {
-      if (!location.state){
-        console.log("refetched")
-        let campaigns = await fetchCampaigns();
-        setCampaigns(campaigns);
-      }
-      else{
-        console.log("from navigate")
-        setCampaigns(location.state.data);
-        window.history.replaceState({}, '')
-      }
+      let campaigns = await fetchCampaigns();
+      setCampaigns(campaigns);
+      NProgress.done();
     }
     loadData();
   }, [location]);

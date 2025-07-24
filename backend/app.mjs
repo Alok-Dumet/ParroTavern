@@ -3,6 +3,11 @@ import './db.mjs';
 import './passportConfig.mjs';
 import passport from 'passport';
 import session from 'express-session';
+import compression from 'compression';
+import helmet from 'helmet';
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {
   router as authRouter,
   isAuthenticated,
@@ -10,23 +15,36 @@ import {
   userExists,
 } from './routes/logRegisterAuth.mjs';
 import { router as createCampaignRouter } from './routes/createCampaign.mjs';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-//creating my express app
-const app = express();
-
-app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
-  next();
-});
+// import logger from "./logger.mjs";
 
 //getting file path to app.mjs
 const __filename = fileURLToPath(import.meta.url);
 
 //getting directory app.mjs is in
 const __dirname = path.dirname(__filename);
+
+//creating my express app
+const app = express();
+
+//compress data sent over to increase speed
+app.use(compression());
+
+//adds the Helmet library's default security headers
+app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
+app.disable("x-powered-by");
 
 //allowing me to use req.body to read query string data as key-value pairs.
 //foo=baz&bar=brillig
@@ -51,9 +69,8 @@ app.use(passport.session());
 
 //logs all pages accessed
 app.use((req, res, next) => {
-  // if(!req.path.includes("src") && !req.path.includes("assets")){
-  console.log(req.path, req.body);
-  // }
+  console.log(req.path, req.body ? req.body : "");
+  // logger.info(`${req.path} was visited`, req.body ? req.body : "");
   next();
 });
 
@@ -74,8 +91,26 @@ app.use(authRouter);
 //sets up route handler for createCampaign page
 app.use(createCampaignRouter);
 
-//telling Express to use the dist directory of my frontend folder to serve static files
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+//globally set no-store caching (overwritten below)
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+
+//Serve static files WITH caching from the dist directory
+app.use(express.static(path.join(__dirname, '../frontend/dist'), {
+  setHeaders: (res, path) => {
+   if (path.endsWith(".html")) {
+      //Don't cache HTML so that when I npm run build after an update the changes are reflected
+      res.setHeader("Cache-Control", "no-cache");
+    } else {
+      //Cache all other file to speed up loads for user
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    }
+  },
+}));
+
+
 
 //Use the frontend to display any route called at all
 app.get(/.*/, (req, res) => {

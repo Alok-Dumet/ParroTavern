@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import passport from 'passport';
+import rateLimit from 'express-rate-limit';
 import '../db.mjs';
 
 //my user model
@@ -135,5 +136,21 @@ router.post('/login', function (req, res, next) {
     }
   })(req, res, next);
 });
+
+const telemetryLimiter = rateLimit({
+  windowMs: 60000, //1 minute
+  max: 10, //limit each IP to 10 requests per minute
+  message: 'Too many telemetry reports from this IP',
+});
+
+router.post("/telemetry", telemetryLimiter, express.json(), (req, res) => {
+  const log = req.body;
+
+  console.log(`[Telemetry] ${new Date().toISOString()}`);
+  console.log(log);
+
+  res.status(204).s end();
+});
+
 
 export { router, isAuthenticated, campaignExists, userExists };

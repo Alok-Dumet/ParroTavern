@@ -42,7 +42,7 @@ export default function Login() {
         <form onSubmit={fetchLogin}>
           <ul>
             <li>
-              username:{' '}
+              username:
               <input
                 name="username"
                 placeholder="Enter your username"
@@ -52,7 +52,7 @@ export default function Login() {
               />
             </li>
             <li>
-              password:{' '}
+              password:
               <input
                 name="password"
                 placeholder="Enter your password"

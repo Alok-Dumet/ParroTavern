@@ -1,14 +1,14 @@
 import NProgress from 'nprogress';
-import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import {UserContext} from "../AppWrapper";
 import TopBar from '../components/topBar';
 import './css/profile.css';
 import './css/layout1.css';
 
 export default function Profile() {
   const { userName } = useParams();
+  const {user: storedUser, setUser: setStoredUser} = useContext(UserContext);
   const [user, setUser] = useState({ userName: '', email: '' });
   const location = useLocation();
 
@@ -16,14 +16,23 @@ export default function Profile() {
     let res = await fetch('/userData/' + encodeURIComponent(userName));
     res = await res.json();
     setUser(res.user);
+    setStoredUser(res.user)
+    console.log("fetched down here")
+    NProgress.done();
   }
 
   //fetch session data
   useEffect(() => {
-    async function loadData() {
-      await fetchSession();
+    if(!storedUser){
+      async function loadData() {
+        await fetchSession();
+      }
+      loadData();
     }
-    loadData();
+    else{
+      setUser(storedUser);
+      setTimeout(() => NProgress.done(), 100);
+    }
   }, [location]);
 
   return (

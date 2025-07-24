@@ -1,26 +1,17 @@
 import { useLocation } from 'react-router-dom'; //provides current URL path
-import { createContext, useContext, useState, useEffect } from "react";
+import {useEffect, useState, createContext, useContext } from "react";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import './pages/css/layout1.css';
 
-const UserContext = createContext(null);
 
-export function useUser() {
-  return useContext(UserContext);
-}
+//Creating a context called UserContext
+export const UserContext = createContext(null);
 
 //a Wrapper that lets me perform useEffect actions first before any other component can
 export default function AppWrapper({ children }) {
-  const [user, setUser] = useState(null);
   const location = useLocation();
-
-  //Fetches session data for the user
-  async function fetchSession() {
-    let res = await fetch("/session");
-    res = await res.json();
-    setUser(res.user);
-  }
+  const [user, setUser] = useState(null);
 
   //paths to ignore fetching data and showing load bar
   const fetchlessPaths = [/^\/login$/, /^\/register$/]
@@ -34,15 +25,27 @@ export default function AppWrapper({ children }) {
       speed: 400
       });
 
-      // NProgress.remove();
-      // NProgress.start();
-      if(!user) fetchSession();
+      NProgress.remove();
+      NProgress.start();
+
+      if(!user){
+        async function fetchSession(){
+          let res = await fetch("/session");
+          res = await res.json();
+          setUser(res.user);
+        }
+        fetchSession();
+      }
     }
   }, [location]);
 
+
+
   return(
-    <UserContext.Provider value={{user,setUser }}>
-        {children}
+    <>
+    <UserContext.Provider value={{user, setUser}}>
+      {children}
     </UserContext.Provider>
+    </>
   );
 }
