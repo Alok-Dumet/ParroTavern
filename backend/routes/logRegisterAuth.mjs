@@ -149,7 +149,7 @@ router.post("/telemetry", telemetryLimiter, express.json(), (req, res) => {
   console.log(`[Telemetry] ${new Date().toISOString()}`);
   console.log(log);
 
-  res.status(204).s end();
+  res.status(204).send();
 });
 
 

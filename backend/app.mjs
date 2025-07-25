@@ -4,9 +4,11 @@ import './passportConfig.mjs';
 import passport from 'passport';
 import session from 'express-session';
 import compression from 'compression';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 import express from 'express';
 import path from 'path';
+// import fs from "fs";
+// import https from "https";
 import { fileURLToPath } from 'url';
 import {
   router as authRouter,
@@ -26,25 +28,30 @@ const __dirname = path.dirname(__filename);
 //creating my express app
 const app = express();
 
+// const sslOptions = {
+//   key: fs.readFileSync(path.join(__dirname, '../cert/key.pem')),
+//   cert: fs.readFileSync(path.join(__dirname, '../cert/cert.pem'))
+// };
+
 //compress data sent over to increase speed
 app.use(compression());
 
 //adds the Helmet library's default security headers
-app.use(helmet());
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'"],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
-    },
-  })
-);
-app.disable("x-powered-by");
+// app.use(helmet());
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       scriptSrc: ["'self'"],
+//       styleSrc: ["'self'", "'unsafe-inline'"],
+//       imgSrc: ["'self'", "data:", "blob:"],
+//       connectSrc: ["'self'"],
+//       objectSrc: ["'none'"],
+//       upgradeInsecureRequests: [],
+//     },
+//   })
+// );
+// app.disable("x-powered-by");
 
 //allowing me to use req.body to read query string data as key-value pairs.
 //foo=baz&bar=brillig
@@ -120,3 +127,7 @@ app.get(/.*/, (req, res) => {
 app.listen(process.env.PORT ?? 3000, () => {
   console.log('backend is running on port: ' + process.env.PORT);
 });
+
+// https.createServer(sslOptions, app).listen(process.env.PORT ?? 3000, () => {
+//   console.log('HTTPS server is running on port: ' + process.env.PORT);
+// });

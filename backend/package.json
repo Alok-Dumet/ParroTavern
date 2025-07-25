@@ -21,6 +21,7 @@
     "express-session": "^1.18.1",
     "hbs": "^4.2.0",
     "helmet": "^8.1.0",
+    "https": "^1.0.0",
     "mongo-sanitize": "^1.1.0",
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.0",
