@@ -34,9 +34,11 @@ const CampaignElement = mongoose.model('CampaignElement');
 const router = express.Router();
 
 //Prevents people without access to a campaign from retrieving information
-function allowed(campaign){
-    if(!campaign.players.includes(req.user._id) && campaign.privacy===true && !campaign.dungeonMaster === req.user._id){
-        return res.redirect("/");
+function allowed(req, res, campaign){
+    if(campaign.privacy === true){
+        if(!campaign.players.includes(req.user._id) || !(campaign.dungeonMaster === req.user._id)){
+            return res.redirect("/");
+        }
     }
 }
 
@@ -75,7 +77,7 @@ router.get("/elements/:userName/:campaignName", async (req, res) => {
         campaignName: campaignName
         }).populate("campaignElements");
 
-        allowed(campaign);
+        allowed(req, res, campaign);
         return res.json({ elements: campaign.campaignElements })
     }
     catch(err){
