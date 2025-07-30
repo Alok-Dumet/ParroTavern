@@ -36,7 +36,7 @@ const router = express.Router();
 //Prevents people without access to a campaign from retrieving information
 function allowed(req, res, campaign){
     if(campaign.privacy === true){
-        if(!campaign.players.includes(req.user._id) || !(campaign.dungeonMaster === req.user._id)){
+        if(!campaign.players.includes(req.user._id) && !(campaign.dungeonMaster === req.user._id)){
             return res.redirect("/");
         }
     }
