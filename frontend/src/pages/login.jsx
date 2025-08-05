@@ -35,7 +35,8 @@ export default function Login() {
   }
 
   return (
-    <div className="LoginRegisterPage">
+    <>
+      <div className="LoginRegisterPage">
       <img
         src="/images/ParroTavern.png"
         className="loginRegisterParroTavernIMG"
@@ -50,7 +51,7 @@ export default function Login() {
               <input
                 name="username"
                 placeholder="Enter your username"
-                type="text"
+                type="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -74,5 +75,6 @@ export default function Login() {
         {error && <div className='error'> {error} </div>}
       </div>
     </div>
+    </>
   );
 }

@@ -43,34 +43,42 @@ function isAuthenticated(req, res, next) {
 
   if (isProtected) {
     if (req.user) {
+      // console.log("protected path allowed");
       return next();
     } else {
+      // console.log("protected path forbidden, redirecting to login");
       return res.redirect('/login');
     }
   } else if (isUnprotected) {
+    // console.log("unprotected path allowed");
     return next();
   } else {
     if (req.user) {
+      // console.log("Non-existant path, redirecting to home");
       return res.redirect('/');
     } else {
+      // console.log("Non-existant path, redirecting to login");
       return res.redirect('/login');
     }
   }
 }
 
 //If the user attempts to reach a campaign, it must be a real existing one made by a real user
-async function campaignExists(req, res, next) {
+async function userExists(req, res, next) {
     let user = await User.findOne({ userName: req.params.userName });
-    if (!user) return res.redirect('/createCampaign');
-    let campaign = await Campaign.findOne({ campaignName: req.params.campaignName, dungeonMaster: user._id });
-    if (!campaign) return res.redirect('/createCampaign');
+    if (!user) return res.redirect('/');
+    console.log("user " + user.userName + " exists")
     return next();
 }
 
 //If the user attempts to reach a campaign, it must be a real existing one made by a real user
-async function userExists(req, res, next) {
+async function campaignExists(req, res, next) {
     let user = await User.findOne({ userName: req.params.userName });
     if (!user) return res.redirect('/');
+    console.log("user " + user.userName + " exists... Now looking for campaign " + req.params.campaignName);
+    let campaign = await Campaign.findOne({ campaignName: req.params.campaignName, dungeonMaster: user._id });
+    if (!campaign) return res.redirect('/');
+    console.log("campaign " + campaign.campaignName + " exists");
     return next();
 }
 

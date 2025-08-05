@@ -8,7 +8,7 @@ import Login from './pages/login.jsx';
 import Register from './pages/register.jsx';
 import CreateCampaign from './pages/createCampaign.jsx';
 import CampaignPage from './pages/campaignPage.jsx';
-
+import Stars from './components/stars';
 
 import AppWrapper from './AppWrapper.jsx';
 
@@ -26,7 +26,9 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
+      <Stars count={250} color={ "#5a0099"}/>
+      <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppWrapper>
           <Routes>
@@ -40,6 +42,7 @@ function App() {
         </AppWrapper>
       </BrowserRouter>
     </QueryClientProvider>
+    </>
   );
 }
 

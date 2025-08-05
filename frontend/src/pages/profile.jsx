@@ -8,55 +8,56 @@ import './css/profile.css';
 import './css/layout1.css';
 
 export default function Profile() {
-  const { data: session} = useQuery({
+  const { data: session, isLoading: sessionLoading} = useQuery({
     queryKey: ['session'],
     queryFn: fetchSession,
     staleTime: Infinity,
   });
-
   const { userName } = useParams();
-  const [user, setUser] = useState({ userName: '', email: '' });
   const location = useLocation();
+  const [user, setUser] = useState({ userName: '', email: '' });
+  const [sameUser, setSameUser] = useState(false);
 
   async function fetchProfile() {
     let res = await fetch('/userData/' + encodeURIComponent(userName));
     res = await res.json();
     setUser(res.user);
-    console.log("fetched down here")
+    setSameUser(false);
+    console.log("fetched from fetchProfile function")
     NProgress.done();
   }
 
   //fetch session data
   useEffect(() => {
-    if(!session){
+    if (!session) return;
+    
+    if (session.user.userName === userName) {
+      setUser(session.user);
+      setSameUser(true);
+      setTimeout(() => NProgress.done(), 100);
+    }
+    else{
       async function loadData() {
         await fetchProfile();
       }
       loadData();
     }
-    else{
-      setUser(session.user);
-      setTimeout(() => NProgress.done(), 100);
-    }
-  }, [location]);
+  }, [location, session]);
 
   return (
-    <div className="wholePage">
-      <TopBar header={userName} />
-
-      <div className="profileContainer">
-        <h1>Welcome</h1>
-        <div className="profileDetails">
-          <ul>
-            <li>
-              Username: {user.userName}
-            </li>
-            <li>
-              Email: {user.email}
-            </li>
-          </ul>
+    <>
+      <div className="wholePage">
+        <TopBar header={userName} />
+        <div className="profileContainer">
+          <h1>Welcome</h1>
+          <div className="profileDetails">
+            <div className="userDetail"><div>Username</div><div>{user.userName}</div></div>
+            {sameUser && 
+              <div className="userDetail"><div>Email</div><div>{user.email}</div></div>
+            }
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

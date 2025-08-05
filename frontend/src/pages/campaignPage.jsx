@@ -16,19 +16,21 @@ export default function CampaignPage() {
   }, [location]);
 
   return (
-    <div className="wholePage">
-      <TopBar header={campaignName} username={userName} />
-      <div className="mainContainer">
-        <div className="leftContainer"></div>
+    <>
+      <div className="wholePage">
+        <TopBar header={campaignName} username={userName} />
+        <div className="mainContainer">
+          <div className="leftContainer"></div>
 
-        <div className="centerContainer">
-          <DraggableBox />
-          <DraggableBox />
-          <DraggableBox />
+          <div className="centerContainer">
+            <DraggableBox />
+            <DraggableBox />
+            <DraggableBox />
+          </div>
+
+          <div className="rightContainer"></div>
         </div>
-
-        <div className="rightContainer"></div>
       </div>
-    </div>
+    </>
   );
 }

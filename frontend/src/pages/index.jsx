@@ -38,6 +38,7 @@ export default function Index() {
   }, [location]);
 
   return (
+  <>
     <div className="wholePage">
       <TopBar header={'Welcome To ParroTavern'} />
 
@@ -53,5 +54,6 @@ export default function Index() {
         <div className="rightContainer"></div>
       </div>
     </div>
+  </>
   );
 }

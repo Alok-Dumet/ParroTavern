@@ -5,6 +5,7 @@ import passport from 'passport';
 import session from 'express-session';
 import compression from 'compression';
 // import helmet from 'helmet';
+import cors from 'cors';
 import express from 'express';
 import path from 'path';
 // import fs from "fs";
@@ -19,22 +20,41 @@ import {
 import { router as createCampaignRouter } from './routes/createCampaign.mjs';
 // import logger from "./logger.mjs";
 
+// -------------------------------------------------------------------------------- Path Setup ----------------------------------------------------------------------------------------------
 //getting file path to app.mjs
 const __filename = fileURLToPath(import.meta.url);
 
-//getting directory app.mjs is in
+//Same __Filename but excluding file name (app.mjs)
 const __dirname = path.dirname(__filename);
 
-//creating my express app
+// -------------------------------------------------------------------------------- Creating Express App ------------------------------------------------------------------------------------
 const app = express();
 
+// -------------------------------------------------------------------------------- (Later implement SSL Certificates) ----------------------------------------------------------------------
 // const sslOptions = {
 //   key: fs.readFileSync(path.join(__dirname, '../cert/key.pem')),
 //   cert: fs.readFileSync(path.join(__dirname, '../cert/cert.pem'))
 // };
 
-//compress data sent over to increase speed
-app.use(compression());
+// -------------------------------------------------------------------------------- Cross Origin Resource Sharing (CORS) ---------------------------------------------------------------------
+//NO ONE IS ALLOWED TO ACCESS MY API EXCEPT FOR THE FRONTEND, LOCALHOST, AND WHATEVER URL I USE FOR THE PRODUCTION VERSION OF THE FRONTEND
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'whateverURLParroTavernWillUse'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Authorization'],
+  credentials: true
+}));
+
+
+// -------------------------------------------------------------------------------- Helmet Security Headers ----------------------------------------------------------------------------------
 
 //adds the Helmet library's default security headers
 // app.use(helmet());
@@ -51,8 +71,13 @@ app.use(compression());
 //     },
 //   })
 // );
-// app.disable("x-powered-by");
+app.disable("x-powered-by");
 
+// -------------------------------------------------------------------------------- Compression ----------------------------------------------------------------------------------------------
+//compress data sent over to increase speed
+app.use(compression());
+
+// -------------------------------------------------------------------------------- Accepted formats for body parsing ------------------------------------------------------------------------
 //allowing me to use req.body to read query string data as key-value pairs.
 //foo=baz&bar=brillig
 app.use(express.urlencoded({ limit: '10mb', extended: false }));
@@ -60,13 +85,14 @@ app.use(express.urlencoded({ limit: '10mb', extended: false }));
 //allows me to read req.body as jsons also
 app.use(express.json({ limit: '10mb' }));
 
-//setting up my session middleware
+// -------------------------------------------------------------------------------- Session and Passport Session -----------------------------------------------------------------------------
+//Use an array of long randomly generate strings as the session key. Change these every so often to keep the session secure.
 app.use(
   session({
     secret: process.env.sessionKey ?? 'LocalSecret',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60, rolling: true }, //logout automatically after an hour of inactivity
+    cookie: { maxAge: 1000 * 60 * 60 * 2, rolling: true }, //logout automatically after an hour of inactivity
   })
 );
 
@@ -74,6 +100,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// -------------------------------------------------------------------------------- Logging pages accessed for local testing -----------------------------------------------------------------
 //logs all pages accessed
 app.use((req, res, next) => {
   console.log(req.path, req.body ? req.body : "");
@@ -81,23 +108,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// -------------------------------------------------------------------------------- Authentication Checks ------------------------------------------------------------------------------------
 //checks every request to see if the path requested is a protected route. If they're not logged in, redirect to login page
 app.use(isAuthenticated);
 
-//checks every request to see if its a visit to a specific campaign
-//If so, the campaign must exist and belong to the user (for now)
-app.use("/elements/:userName/:campaignName", campaignExists);
-
-//checks if a particular user exists if visiting the profile of a user
+//checks if a user or campaign exists before allowing access to the route
+app.use("/campaign/:userName/:campaignName", campaignExists);
 app.use("/userData/:userName", userExists);
 app.use("/profile/:userName", userExists);
 
+// -------------------------------------------------------------------------------- Route Handlers ------------------------------------------------------------------------------------------
 //sets up route handlers for the main, login, and register pages I created in passportUsers.mjs
 app.use(authRouter);
 
 //sets up route handler for createCampaign page
 app.use(createCampaignRouter);
 
+// -------------------------------------------------------------------------------- Marking Files as Cacheable -------------------------------------------------------------------------------
 //globally set no-store caching (overwritten below)
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -117,17 +144,18 @@ app.use(express.static(path.join(__dirname, '../frontend/dist'), {
   },
 }));
 
-
-
+// -------------------------------------------------------------------------------- Fallback ------------------------------------------------------------------------------------------------
 //Use the frontend to display any route called at all
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+  return res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
+// -------------------------------------------------------------------------------- Starting the Server -------------------------------------------------------------------------------------
 app.listen(process.env.PORT ?? 3000, () => {
   console.log('backend is running on port: ' + process.env.PORT);
 });
 
+// -------------------------------------------------------------------------------- (Later implement SSL Certificates with HTTPS) -----------------------------------------------------------
 // https.createServer(sslOptions, app).listen(process.env.PORT ?? 3000, () => {
 //   console.log('HTTPS server is running on port: ' + process.env.PORT);
 // });

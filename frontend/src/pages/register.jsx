@@ -32,54 +32,56 @@ export default function Register() {
   }
 
   return (
-    <div className="LoginRegisterPage">
-      <img
-        src="/images/ParroTavern.png"
-        className="loginRegisterParroTavernIMG"
-        alt="ParroTavern logo"
-      />
-      <div className="register">
-        <h1> Register Below! </h1>
-        <form onSubmit={fetchRegister}>
-          <ul>
-            <li>
-              username:
-              <input
-                name="username"
-                placeholder="Enter your username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </li>
-            <li>
-              password:
-              <input
-                name="password"
-                placeholder="Enter your password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </li>
-            <li>
-              email:
-              <input
-                name="email"
-                placeholder="Enter your email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </li>
-          </ul>
-          <input type="submit" value="Register" />
-        </form>
-        <h2>
-          Already Have an Account? <Link to="/login"> Log In</Link>
-        </h2>
-        {error && <div className='error'> {error} </div>}
+    <>
+      <div className="LoginRegisterPage">
+        <img
+          src="/images/ParroTavern.png"
+          className="loginRegisterParroTavernIMG"
+          alt="ParroTavern logo"
+        />
+        <div className="register">
+          <h1> Register Below! </h1>
+          <form onSubmit={fetchRegister}>
+            <ul>
+              <li>
+                username:
+                <input
+                  name="username"
+                  placeholder="Enter your username"
+                  type="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </li>
+              <li>
+                password:
+                <input
+                  name="password"
+                  placeholder="Enter your password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </li>
+              <li>
+                email:
+                <input
+                  name="email"
+                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </li>
+            </ul>
+            <input type="submit" value="Register" />
+          </form>
+          <h2>
+            Already Have an Account? <Link to="/login"> Log In</Link>
+          </h2>
+          {error && <div className='error'> {error} </div>}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

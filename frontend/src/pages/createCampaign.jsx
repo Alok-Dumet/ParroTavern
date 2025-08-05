@@ -129,83 +129,85 @@ export default function CreateCampaign() {
   }, [location]);
 
   return (
-    <div className="wholePage">
-      <TopBar header={'Your Campaigns'} />
+    <>
+      <div className="wholePage">
+        <TopBar header={'Your Campaigns'} />
 
-      {creating && <div className='creationContainer'>
-        <form className="campaignCreateOptions" onSubmit={createCampaign}>
-          <div className="campaignSection">
-            <label className="previewContainer">
+        {creating && <div className='creationContainer'>
+          <form className="campaignCreateOptions" onSubmit={createCampaign}>
+            <div className="campaignSection">
+              <label className="previewContainer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInput}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                {preview && <img className="preview" src={preview} />}
+              </label>
+            </div>
+            <div className="campaignSection">
+              <h1>Campaign Name</h1>
               <input
-                type="file"
-                accept="image/*"
-                ref={fileInput}
-                onChange={handleFileChange}
-                className="hidden"
+                type="text"
+                className="campaignNameTextBox"
+                placeholder="Your Story Begins Here!"
+                value={campaignName}
+                onChange={(e) => setCampaignName(e.target.value)}
               />
-              {preview && <img className="preview" src={preview} />}
-            </label>
-          </div>
-          <div className="campaignSection">
-            <h1>Campaign Name</h1>
+            </div>
+            <div className="campaignSection">
+              <h1>{'Description'}</h1>
+              <input
+                type="text"
+                className="campaignNameTextBox"
+                placeholder="Let viewers get a rough idea of your story!"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div className="campaignSection">
+              <h1>{'Privacy'}</h1>
+              <Switch isPrivate={isPrivate} setPrivacy={setPrivacy} />
+            </div>
+            <input type="submit" className="campaignNameSubmit" value="Submit" />
             <input
-              type="text"
-              className="campaignNameTextBox"
-              placeholder="Your Story Begins Here!"
-              value={campaignName}
-              onChange={(e) => setCampaignName(e.target.value)}
+              type="button"
+              className="campaignNameClose"
+              value="Cancel"
+              onClick={toggleCampaignCreateOptions}
             />
+            {error && <div className='error'> {error} </div>}
+          </form>
+        </div>}
+
+        {!creating && <div className='mainContainer'>
+          <div className="leftContainer">
+            <button className="createButton" onClick={toggleCampaignCreateOptions}>
+              Create
+            </button>
           </div>
-          <div className="campaignSection">
-            <h1>{'Description'}</h1>
-            <input
-              type="text"
-              className="campaignNameTextBox"
-              placeholder="Let viewers get a rough idea of your story!"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <div className="campaignSection">
-            <h1>{'Privacy'}</h1>
-            <Switch isPrivate={isPrivate} setPrivacy={setPrivacy} />
-          </div>
-          <input type="submit" className="campaignNameSubmit" value="Submit" />
-          <input
-            type="button"
-            className="campaignNameClose"
-            value="Cancel"
-            onClick={toggleCampaignCreateOptions}
+
+          <Confirmation
+            message="delete Campaign"
+            state={deleting}
+            setState={setDeleting}
+            action={() => {
+              deleteCampaign(campaignToDelete);
+              setCampaignToDelete(null);
+            }}
           />
-          {error && <div className='error'> {error} </div>}
-        </form>
-      </div>}
 
-      {!creating && <div className='mainContainer'>
-        <div className="leftContainer">
-          <button className="createButton" onClick={toggleCampaignCreateOptions}>
-            Create
-          </button>
-        </div>
+          <div className="centerContainer">
+            {campaigns.map((campaign, index) => (
+              <Preview key={index} campaign={campaign} deleteRequest={deleteRequest} />
+            ))}
+          </div>
 
-        <Confirmation
-          message="delete Campaign"
-          state={deleting}
-          setState={setDeleting}
-          action={() => {
-            deleteCampaign(campaignToDelete);
-            setCampaignToDelete(null);
-          }}
-        />
-
-        <div className="centerContainer">
-          {campaigns.map((campaign, index) => (
-            <Preview key={index} campaign={campaign} deleteRequest={deleteRequest} />
-          ))}
-        </div>
-
-        <div className="rightContainer"></div>
-      </div>}
-    </div>
+          <div className="rightContainer"></div>
+        </div>}
+      </div>
+    </>
   );
 }

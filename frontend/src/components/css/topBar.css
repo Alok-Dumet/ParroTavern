@@ -1,4 +1,5 @@
   .topbar {
+    box-sizing: border-box;
   position: fixed;
   top: 0;
   width: 100%;
@@ -6,22 +7,24 @@
   background-color: #4b0082; 
   color: white;
   display: flex;
-  /* justify-content: center;  */
+  justify-content: space-between; 
   align-items: center;
-  padding: 0 2rem;
-  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); */
+  padding-left: 2rem;
+  padding-right: 2rem;
   z-index: 1000;
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 1.8rem;
+  border-bottom: solid #5a0099 0.1rem;
+  border-top: solid #5a0099 0.1rem;
 }
 
 .topbar .campaignIdentityContainer{
   display: flex;
   flex-direction: column;
   font-size: 1rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.8rem;
 }
 
 .topbar .user{
@@ -36,16 +39,11 @@
 }
 
 .homeParroTavernIMG {
-  position: absolute;
-  right: 125px;
-  height: 60px;
-  width: 60px;
-  object-fit: cover;
-  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 1); */
+  height: 4rem;
+  width: 4rem;
   cursor: pointer;
   border: 8px solid transparent;
   border-radius: 50%;
-  object-fit: cover;
   transition: border 0.3s ease;
 }
 
@@ -58,7 +56,7 @@
   top: 60px;
   right: 0px;
   max-height: 0;
-  width: 200px;
+  width: 16rem;
   background-color: #53008f; 
   border-radius: 12px;
   padding-top: 1rem;
