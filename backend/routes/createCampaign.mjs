@@ -42,26 +42,23 @@ function allowed(req, res, campaign){
     }
 }
 
-//Route handler for displaying all users campaigns
-router.get("/myCampaigns", async (req, res)=>{
+//Route handler for getting campaigns, either owned by the user or public
+router.get("/campaigns", async (req, res)=>{
+    const owned = (req.query.owned === 'true');
+    console.log(owned);
     try{
-        let campaigns = await Campaign.find({ dungeonMaster: req.user._id}).populate('dungeonMaster', 'userName');
-        res.json({campaigns: campaigns});
+        if(owned){
+            let campaigns = await Campaign.find({ dungeonMaster: req.user._id}).populate('dungeonMaster', 'userName');
+            res.json({campaigns: campaigns});
+        }else{
+            console.log("YIPEEEEEEEEEEEEEE")
+            let campaigns = await Campaign.find({privacy: false}).populate('dungeonMaster', 'userName');
+            console.log(campaigns);
+            res.json({campaigns: campaigns});
+        }
     }
     catch(err){
         console.log(err.message);
-        res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
-    }
-})
-
-//Router handler for displaying all public campaigns
-router.get("/publicCampaigns", async (req, res)=>{
-    try{
-        const campaigns = await Campaign.find({privacy: false}).populate('dungeonMaster', 'userName');
-        res.json({campaigns: campaigns});
-    }
-    catch(err){
-        console.log(err);
         res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
     }
 })

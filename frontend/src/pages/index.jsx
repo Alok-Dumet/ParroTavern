@@ -14,7 +14,7 @@ export default function Index() {
   const location = useLocation();
 
   async function fetchPublic(){
-    let data = await fetch("/publicCampaigns");
+    let data = await fetch("/campaigns?owned=false");
     data = await data.json();
     let processed = data.campaigns.map((campaign) => {
       const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes

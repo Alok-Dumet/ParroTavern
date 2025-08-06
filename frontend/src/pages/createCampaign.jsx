@@ -32,7 +32,7 @@ export default function CreateCampaign() {
   const location = useLocation();
 
   async function fetchCampaigns(){
-    let data = await fetch('/myCampaigns');
+    let data = await fetch('/campaigns?owned=true');
     data = await data.json();
     let processed = data.campaigns.map((campaign) => {
       const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes

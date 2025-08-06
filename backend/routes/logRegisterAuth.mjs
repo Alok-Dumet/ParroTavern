@@ -19,8 +19,7 @@ const protectedPatterns = [
   /^\/logout$/,
   /^\/session$/,
   /^\/userData\/[^/]+$/,
-  /^\/myCampaigns$/,
-  /^\/publicCampaigns$/,
+  /^\/campaigns$/,
   /^\/createCampaign$/,
   /^\/campaign\/[^/]+\/[^/]+$/,
   /^\/newCampaign$/,
@@ -43,7 +42,7 @@ function isAuthenticated(req, res, next) {
 
   if (isProtected) {
     if (req.user) {
-      // console.log("protected path allowed");
+      console.log("protected path allowed");
       return next();
     } else {
       // console.log("protected path forbidden, redirecting to login");
@@ -151,14 +150,15 @@ const telemetryLimiter = rateLimit({
   message: 'Too many telemetry reports from this IP',
 });
 
-router.post("/telemetry", telemetryLimiter, express.json(), (req, res) => {
-  const log = req.body;
+//Logs frontend errors
+// router.post("/telemetry", telemetryLimiter, express.json(), (req, res) => {
+//   const log = req.body;
 
-  console.log(`[Telemetry] ${new Date().toISOString()}`);
-  console.log(log);
+//   console.log(`[Telemetry] ${new Date().toISOString()}`);
+//   console.log(log);
 
-  res.status(204).send();
-});
+//   res.status(204).send();
+// });
 
 
 export { router, isAuthenticated, campaignExists, userExists };
