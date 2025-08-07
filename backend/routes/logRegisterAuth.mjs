@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import passport from 'passport';
-import rateLimit from 'express-rate-limit';
+// import rateLimit from 'express-rate-limit';
 import '../db.mjs';
 
 //my user model
@@ -12,18 +12,19 @@ const Campaign = mongoose.model('Campaign');
 const router = express.Router();
 
 //routes that users shouldn't be able to access unless logged in
-const protectedPatterns = [
+const protectedPagePatterns = [
   /^\/$/,
-  /^\/myProfile$/,
   /^\/profile\/[^/]+$/,
-  /^\/logout$/,
-  /^\/session$/,
-  /^\/userData\/[^/]+$/,
-  /^\/campaigns$/,
-  /^\/createCampaign$/,
+  /^\/yourCampaigns$/,
   /^\/campaign\/[^/]+\/[^/]+$/,
-  /^\/newCampaign$/,
-  /^\/deleteCampaign$/,
+];
+const protectedApiPatterns = [
+  /^\/users\/[^/]+$/,
+  /^\/logout$/,
+  /^\/campaigns$/,
+  /^\/campaigns\/[^/]+$/,
+  /^\/campaigns\/[^/]+\/elements$/,
+  /^\/thumbnails\/[^/]+$/
 ];
 
 //routes that users should be able to access at all times
@@ -35,77 +36,88 @@ const ignoredPatterns = [/^\/(assets|images)\//];
 //If the user attempts to reach a protected route while not logged in, redirect to login page
 function isAuthenticated(req, res, next) {
   let path = req.path;
-  const isProtected = protectedPatterns.some((pattern) => pattern.test(path));
+  const isProtectedPage = protectedPagePatterns.some((pattern) => pattern.test(path));
+  const isProtectedApi = protectedApiPatterns.some((pattern) => pattern.test(path));
   const isUnprotected = unprotectedPatterns.some((pattern) => pattern.test(path));
   const isIgnored = ignoredPatterns.some((pattern) => pattern.test(path));
   if (isIgnored) return next();
 
-  if (isProtected) {
+  if (isProtectedPage) {
     if (req.user) {
-      console.log("protected path allowed");
+      // console.log("protected path allowed");
       return next();
     } else {
       // console.log("protected path forbidden, redirecting to login");
-      return res.redirect('/login');
+      return res.status(401).redirect('/login');
     }
-  } else if (isUnprotected) {
+  } else if(isProtectedApi){
+    if (req.user) {
+      // console.log("protected API path allowed", path);
+      return next();
+    } else {
+      // console.log("protected API path forbidden, redirecting to login");
+      return res.status(401).json({ error: 'You must be logged in to access this resource.' });
+    }
+  }
+    else if (isUnprotected) {
     // console.log("unprotected path allowed");
     return next();
   } else {
     if (req.user) {
       // console.log("Non-existant path, redirecting to home");
-      return res.redirect('/');
+      return res.status(404).redirect('/');
     } else {
       // console.log("Non-existant path, redirecting to login");
-      return res.redirect('/login');
+      return res.status(404).redirect('/login');
     }
   }
 }
 
-//If the user attempts to reach a campaign, it must be a real existing one made by a real user
-async function userExists(req, res, next) {
+//If the user attempts to reach a user or campaign, it must be a real one
+async function userCampaignExists(req, res, next) {
     let user = await User.findOne({ userName: req.params.userName });
-    if (!user) return res.redirect('/');
+    if (!user) return res.status(404).redirect('/');
     console.log("user " + user.userName + " exists")
+    if(req.params.campaignName){
+      let campaign = await Campaign.findOne({ campaignName: req.params.campaignName, dungeonMaster: user._id });
+      if (!campaign) return res.status(404).redirect('/');
+      console.log("campaign " + campaign.campaignName + " exists");
+    }
     return next();
 }
 
-//If the user attempts to reach a campaign, it must be a real existing one made by a real user
-async function campaignExists(req, res, next) {
-    let user = await User.findOne({ userName: req.params.userName });
-    if (!user) return res.redirect('/');
-    console.log("user " + user.userName + " exists... Now looking for campaign " + req.params.campaignName);
-    let campaign = await Campaign.findOne({ campaignName: req.params.campaignName, dungeonMaster: user._id });
-    if (!campaign) return res.redirect('/');
-    console.log("campaign " + campaign.campaignName + " exists");
-    return next();
+//Helper function for route handlers to check for if a user exists
+async function userExists(req, res, userName){
+  const foreignUser = await User.findOne({ userName });
+  if (!foreignUser) {
+    res.status(404).json({ error: 'User not found.' });
+    return null;
+  }
+  return foreignUser;
 }
-
-//route handler for current users data
-router.get("/session", async (req, res)=>{
-  return res.json({user:{userName: req.user.userName, email: req.user.email}})
-})
 
 //route handler for retrieving any users data
-router.get('/userData/:userName', async (req, res) => {
+router.get('/users/:userName', async (req, res) => {
   try{
     const userName = req.params.userName;
-    if(req.user.userName === userName) return res.json({ user: {userName: req.user.userName, email: req.user.email}});
+    if(userName === "me") return res.json({ user: {userName: req.user.userName, email: req.user.email}});
 
-    let foreignUser = await User.findOne({userName: req.params.userName});
+    const foreignUser = await userExists(req, res, userName);
+    if (!foreignUser) return; 
+
     return res.json({user: {userName: foreignUser.userName}});
   }
   catch(err){
     console.log(err.message);
-    res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
+    return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
   }
 });
 
 //route handler for logging out
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   req.logOut(() => {
     req.session.destroy(() => {
-      res.json({ logout: 'session destroyed' });
+      return res.json({ logout: 'session destroyed' });
     });
   });
 });
@@ -119,10 +131,10 @@ router.post('/register', function (req, res) {
     (err, user) => {
       if (err) {
         console.log(user);
-        res.json({ error: err.message });
+        return res.status(409).json({ error: "There was an issue with your inputs" });
       } else {
         passport.authenticate('local')(req, res, function () {
-          res.json({});
+          return res.json({});
         });
       }
     }
@@ -139,18 +151,18 @@ router.post('/login', function (req, res, next) {
         res.json({user: {userName: req.user.userName, email: req.user.email}});
       });
     } else {
-      res.json({ error: 'Your login or password is incorrect.' });
+      res.status(401).json({ error: 'Your login or password is incorrect.' });
     }
   })(req, res, next);
 });
 
-const telemetryLimiter = rateLimit({
-  windowMs: 60000, //1 minute
-  max: 10, //limit each IP to 10 requests per minute
-  message: 'Too many telemetry reports from this IP',
-});
+// const telemetryLimiter = rateLimit({
+//   windowMs: 60000, //1 minute
+//   max: 10, //limit each IP to 10 requests per minute
+//   message: 'Too many telemetry reports from this IP',
+// });
 
-//Logs frontend errors
+// Logs frontend errors
 // router.post("/telemetry", telemetryLimiter, express.json(), (req, res) => {
 //   const log = req.body;
 
@@ -161,4 +173,4 @@ const telemetryLimiter = rateLimit({
 // });
 
 
-export { router, isAuthenticated, campaignExists, userExists };
+export { router, isAuthenticated, userCampaignExists };

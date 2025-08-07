@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import { fileURLToPath } from 'url';
+import { fileTypeFromBuffer } from 'file-type';
 import multer from 'multer';
 import '../db.mjs';
 
@@ -9,21 +10,20 @@ import fs from 'fs';
 import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-
-//getting directory app.mjs is in
 const __dirname = path.dirname(__filename);
+const thumbnailPath = path.join(__dirname, '../nonStatic/thumbnails');
 
-//allows multipart file reading
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 } // 10 MB
+const storage = multer.diskStorage({
+  destination: (req, file, cb)=>{
+    cb(null, thumbnailPath);
+  },
+  filename: (req, file, cb)=>{
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
-//default image
-const defaultImage = {
-  data: fs.readFileSync(path.join(__dirname, '../images/thumbnail.png')),
-  contentType: 'image/png'
-};
+//allows multipart file reading
+const upload = multer({storage});
 
 //my models
 const User = mongoose.model('User');
@@ -33,67 +33,69 @@ const CampaignElement = mongoose.model('CampaignElement');
 //Router
 const router = express.Router();
 
-//Prevents people without access to a campaign from retrieving information
+//Prevents people without access to a campaign from retrieving information from API
 function allowed(req, res, campaign){
+    if(!campaign){
+        res.status(404).json({ error: 'Campaign not found.' });
+        return false;
+    }
     if(campaign.privacy === true){
         if(!campaign.players.includes(req.user._id) && !(campaign.dungeonMaster === req.user._id)){
-            return res.redirect("/");
+            res.status(403).json({ error: 'You do not have permission to access this campaign.' });
+            return false
         }
     }
+    return true;
 }
 
-//Route handler for getting campaigns, either owned by the user or public
+//Route handler for getting Campaigns, either owned by the user or public
 router.get("/campaigns", async (req, res)=>{
-    const owned = (req.query.owned === 'true');
-    console.log(owned);
     try{
+        const owned = (req.query.owned === 'true');
         if(owned){
             let campaigns = await Campaign.find({ dungeonMaster: req.user._id}).populate('dungeonMaster', 'userName');
-            res.json({campaigns: campaigns});
+            return res.json({campaigns: campaigns});
         }else{
-            console.log("YIPEEEEEEEEEEEEEE")
             let campaigns = await Campaign.find({privacy: false}).populate('dungeonMaster', 'userName');
-            console.log(campaigns);
-            res.json({campaigns: campaigns});
+            return res.json({campaigns: campaigns});
         }
     }
     catch(err){
         console.log(err.message);
-        res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
+        return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
     }
-})
+});
 
-//Router handler for getting all the data for a particular campaign
-router.get("/elements/:userName/:campaignName", async (req, res) => {
+//Router handler for getting all the data for a particular Campaign
+router.get("/campaigns/:campaignId/elements", async (req, res) => {
     try{
-        const campaignName = req.params.campaignName;
-        const dungeonMaster = await User.findOne({userName: req.params.userName});
+        const campaignId = req.params.campaignId;
+        const campaign = await Campaign.findOne({ _id: campaignId}).populate("campaignElements");
 
-        const campaign = await Campaign.findOne({
-        dungeonMaster: dungeonMaster._id,
-        campaignName: campaignName
-        }).populate("campaignElements");
-
-        allowed(req, res, campaign);
-        return res.json({ elements: campaign.campaignElements })
+        if(!allowed(req, res, campaign)) return;
+        return res.json({ elements: campaign.campaignElements });
     }
     catch(err){
         console.log(err);
-        res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
+        return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
     }
-  });
+});
 
 //Router handler for making a new Campaign
-router.post('/newCampaign', upload.single('image'), async (req, res) => {
+router.post('/campaigns', upload.single('image'), async (req, res) => {
     try{
-        const image = req.file;
         const {campaignName, description, isPrivate} = req.body;
+        const file = req.file;
+        let thumbnailUrl = null;
+
+        if (file) {
+        thumbnailUrl = `/thumbnails/${file.filename}`;
+        } else {
+        thumbnailUrl = '/images/default.png'; // adjust path based on your setup
+        }
 
         const newCampaign = new Campaign({
-            thumbNail: image ? {
-                data: image.buffer,
-                contentType: image.mimetype
-            } : defaultImage,
+            thumbnail: thumbnailUrl,
             campaignName: campaignName,
             description: description,
             privacy: (isPrivate === "true"),
@@ -101,28 +103,32 @@ router.post('/newCampaign', upload.single('image'), async (req, res) => {
         });
         await newCampaign.save();
 
-        const user = await User.findOne({_id: req.user._id});
-        user.campaigns.push(newCampaign._id);
-        await user.save();
-        res.json({});
+        req.user.campaigns.push(newCampaign._id);
+        await req.user.save();
+        return res.json({});
     }
     catch(err){
         console.log(err.message);
-        res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
+        return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
     }
 });
 
-//Router handler for deleting a campaign
-router.delete("/deleteCampaign", async (req, res)=>{
+//Router handler for deleting a Campaign
+router.delete("/campaigns/:campaignId", async (req, res)=>{
     try{
-        let campaignName = req.body.campaignName;
-        let dungeonMaster = req.user._id;
-        await Campaign.deleteOne({campaignName: campaignName, dungeonMaster: dungeonMaster});
-        res.json({});
+        const campaignId = req.params.campaignId;
+        const campaign = await Campaign.findOne({ _id: campaignId });
+        if (!campaign) return res.status(404).json({ error: 'Campaign not found or Owned' });
+
+        const thumbnailPath = path.join(__dirname, '..', 'nonStatic', campaign.thumbnail);
+        if (campaign.thumbnail !== '/images/default.png') fs.unlinkSync(thumbnailPath);
+        await Campaign.deleteOne({ _id: campaignId });
+
+        return res.json({});
     }
     catch(err){
         console.log(err.message);
-        res.status(500).json({ error: 'Something went wrong. It was probably your fault lol' });
+        return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
     }
 })
 

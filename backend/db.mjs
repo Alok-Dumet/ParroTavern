@@ -50,9 +50,9 @@ const UserSchema = mongoose.Schema({
 //DungeonMaster does not need a password. Players are identified by logging in and have edit permissions on CampaignElements the DungeonMaster allows them to have
 //People who renown the campaign are tracked so that the same person cannot give multiple renown to a single campaign and so they can unlike later if they wish
 const CampaignSchema = mongoose.Schema({
-  thumbNail: {
-    data: Buffer,
-    contentType: String,
+  thumbnail: {
+    type: String,
+    required: [true, 'Thumbnail is required'],
   },
   campaignName: {
     type: String,

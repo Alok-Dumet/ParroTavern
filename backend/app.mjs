@@ -14,8 +14,7 @@ import { fileURLToPath } from 'url';
 import {
   router as authRouter,
   isAuthenticated,
-  campaignExists,
-  userExists,
+  userCampaignExists,
 } from './routes/logRegisterAuth.mjs';
 import { router as createCampaignRouter } from './routes/createCampaign.mjs';
 // import logger from "./logger.mjs";
@@ -78,11 +77,8 @@ app.disable("x-powered-by");
 app.use(compression());
 
 // -------------------------------------------------------------------------------- Accepted formats for body parsing ------------------------------------------------------------------------
-//allowing me to use req.body to read query string data as key-value pairs.
-//foo=baz&bar=brillig
-app.use(express.urlencoded({ limit: '10mb', extended: false }));
 
-//allows me to read req.body as jsons also
+//Allows me to read req.body as jsons also
 app.use(express.json({ limit: '10mb' }));
 
 // -------------------------------------------------------------------------------- Session and Passport Session -----------------------------------------------------------------------------
@@ -113,9 +109,8 @@ app.use((req, res, next) => {
 app.use(isAuthenticated);
 
 //checks if a user or campaign exists before allowing access to the route
-app.use("/campaign/:userName/:campaignName", campaignExists);
-app.use("/userData/:userName", userExists);
-app.use("/profile/:userName", userExists);
+app.use("/campaign/:userName/:campaignName", userCampaignExists);
+app.use("/profile/:userName", userCampaignExists);
 
 // -------------------------------------------------------------------------------- Route Handlers ------------------------------------------------------------------------------------------
 //sets up route handlers for the main, login, and register pages I created in passportUsers.mjs
@@ -124,12 +119,20 @@ app.use(authRouter);
 //sets up route handler for createCampaign page
 app.use(createCampaignRouter);
 
-// -------------------------------------------------------------------------------- Marking Files as Cacheable -------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------- Cacheability and Static File Directories ----------------------------------------------------------------
 //globally set no-store caching (overwritten below)
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
   next();
 });
+
+app.use(/^\/thumbnails\/[^/]+$/, (req, res, next) => {
+  console.log(path);
+  next();
+});
+
+//Serve thumbnails from the nonStatic directory
+app.use(/^\/thumbnails\/[^/]+$/, express.static(path.join(__dirname, 'nonStatic')));
 
 //Serve static files WITH caching from the dist directory
 app.use(express.static(path.join(__dirname, '../frontend/dist'), {
