@@ -36,7 +36,7 @@ function App() {
             <Route path="/profile/:userName" element={<Profile/>}/>
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
-            <Route path="/createCampaign" element={<CreateCampaign/>} />
+            <Route path="/yourCampaigns" element={<CreateCampaign/>} />
             <Route path="/campaign/:userName/:campaignName" element={<CampaignPage/>}/>
           </Routes>
         </AppWrapper>

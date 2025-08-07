@@ -17,17 +17,16 @@ export default function Login() {
 
     let options = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ username: username, password: password }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, password: password }),
     };
 
     let res = await fetch('/login', options);
     res = await res.json();
 
-
     if (!res.error) {
       setError(null);
-      queryClient.invalidateQueries(['session']);
+      queryClient.invalidateQueries(['self']);
       navigate('/');
     } else {
       setError(res.error);

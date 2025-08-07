@@ -1,21 +1,21 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient} from '@tanstack/react-query';
-import { fetchSession } from "../AppWrapper.jsx";
+import { fetchSelf } from "../AppWrapper.jsx";
 import Confirmation from './confirmation';
 import './css/topBar.css';
 
 let pageLinks = [
   { anchor: '/profile', text: 'Profile' },
-  { anchor: '/createCampaign', text: 'Your Campaigns'},
+  { anchor: '/yourCampaigns', text: 'Your Campaigns'},
   { anchor: '/', text: 'Home'},
   { anchor: '/logout', text: 'Log Out'}
 ];
 
 export default function TopBar({ header, username }) {
-  const {data: session} = useQuery({
-    queryKey: ['session'],
-    queryFn: fetchSession,
+  const {data: self} = useQuery({
+    queryKey: ['self'],
+    queryFn: fetchSelf,
     staleTime: Infinity,
   });
 
@@ -33,7 +33,7 @@ export default function TopBar({ header, username }) {
 
   //logs user out
   async function fetchLogout() {
-    let res = await fetch('/logout');
+    let res = await fetch('/logout', {method: 'POST'});
     res = await res.json();
     if (res.logout) {
       queryClient.clear();
@@ -93,7 +93,7 @@ export default function TopBar({ header, username }) {
             return (
               <div
                 key={index}
-                onClick={() => navigate('/profile/' + encodeURIComponent(session.user.userName))}
+                onClick={() => navigate('/profile/' + encodeURIComponent(self.user.userName))}
               >
                 {link.text}
               </div>

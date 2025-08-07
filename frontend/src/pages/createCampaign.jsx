@@ -34,13 +34,7 @@ export default function CreateCampaign() {
   async function fetchCampaigns(){
     let data = await fetch('/campaigns?owned=true');
     data = await data.json();
-    let processed = data.campaigns.map((campaign) => {
-      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
-      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
-      const thumbNail = URL.createObjectURL(blob);
-      return { ...campaign, thumbNail };
-    });
-    return processed;
+    return data.campaigns;
   }
 
   function toggleCampaignCreateOptions() {
@@ -69,7 +63,7 @@ export default function CreateCampaign() {
       method: 'POST',
       body: formData,
     };
-    let res = await fetch('/newCampaign', options);
+    let res = await fetch('/campaigns', options);
     res = await res.json();
     if (!res.error) {
       const reloadedData = await fetchCampaigns();
@@ -90,15 +84,14 @@ export default function CreateCampaign() {
   async function deleteCampaign(campaign) {
     NProgress.remove();
     NProgress.start();
-    let campaignName = campaign.campaignName;
+    const campaignName = campaign.campaignName;
+    const campaignId = campaign._id;
 
     let options = {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ campaignName: campaignName }),
+      method: 'DELETE'
     };
 
-    let res = await fetch('/deleteCampaign', options);
+    let res = await fetch(`/campaigns/${campaignId}`, options);
     res = await res.json();
     if (!res.error) {
       const reloadedData = await fetchCampaigns();

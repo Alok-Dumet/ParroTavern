@@ -16,13 +16,7 @@ export default function Index() {
   async function fetchPublic(){
     let data = await fetch("/campaigns?owned=false");
     data = await data.json();
-    let processed = data.campaigns.map((campaign) => {
-      const byteArray = new Uint8Array(campaign.thumbNail.data.data); // extract bytes
-      const blob = new Blob([byteArray], { type: campaign.thumbNail.contentType });
-      const thumbNail = URL.createObjectURL(blob);
-      return { ...campaign, thumbNail };
-    });
-    return processed;
+    return data.campaigns;
   }
 
   //fetch public campaigns

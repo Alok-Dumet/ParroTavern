@@ -2,15 +2,15 @@ import NProgress from 'nprogress';
 import { useLocation, useParams } from 'react-router-dom';
 import { useState, useEffect} from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchSession } from "../AppWrapper.jsx";
+import { fetchSelf } from "../AppWrapper.jsx";
 import TopBar from '../components/topBar';
 import './css/profile.css';
 import './css/layout1.css';
 
 export default function Profile() {
-  const { data: session, isLoading: sessionLoading} = useQuery({
-    queryKey: ['session'],
-    queryFn: fetchSession,
+  const { data: self} = useQuery({
+    queryKey: ['self'],
+    queryFn: fetchSelf,
     staleTime: Infinity,
   });
   const { userName } = useParams();
@@ -19,7 +19,7 @@ export default function Profile() {
   const [sameUser, setSameUser] = useState(false);
 
   async function fetchProfile() {
-    let res = await fetch('/userData/' + encodeURIComponent(userName));
+    let res = await fetch('/users/' + encodeURIComponent(userName));
     res = await res.json();
     setUser(res.user);
     setSameUser(false);
@@ -27,12 +27,12 @@ export default function Profile() {
     NProgress.done();
   }
 
-  //fetch session data
+  //fetch self (the active user) data
   useEffect(() => {
-    if (!session) return;
+    if (!self) return;
     
-    if (session.user.userName === userName) {
-      setUser(session.user);
+    if (self.user.userName === userName) {
+      setUser(self.user);
       setSameUser(true);
       setTimeout(() => NProgress.done(), 100);
     }
@@ -42,7 +42,7 @@ export default function Profile() {
       }
       loadData();
     }
-  }, [location, session]);
+  }, [location, self]);
 
   return (
     <>

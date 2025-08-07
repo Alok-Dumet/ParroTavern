@@ -26,6 +26,8 @@ body {
     position: relative;
     width: 60%;
     background-color: #7b1fa2;
+    border-left: solid #5a0099 0.1rem;
+    border-right: solid #5a0099 0.1rem;
     padding: 1rem;
     box-sizing: border-box;
     overflow:auto;

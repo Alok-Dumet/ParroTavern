@@ -16,8 +16,8 @@ export default function Register() {
 
     let options = {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ username: username, password: password, email: email }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username, password: password, email: email }),
     };
 
     let res = await fetch('/register', options);
