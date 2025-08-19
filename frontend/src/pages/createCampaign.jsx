@@ -118,6 +118,7 @@ export default function CreateCampaign() {
       setCampaigns(campaigns);
       NProgress.done();
     }
+    if(creating) toggleCampaignCreateOptions();
     loadData();
   }, [location]);
 
@@ -144,21 +145,26 @@ export default function CreateCampaign() {
               <h1>Campaign Name</h1>
               <input
                 type="text"
-                className="campaignNameTextBox"
+                className="campaignTextBox"
                 placeholder="Your Story Begins Here!"
                 value={campaignName}
                 onChange={(e) => setCampaignName(e.target.value)}
+                maxLength="50"
+                required
               />
+              <div className="wordCount"> <div>{campaignName.length}/50</div> </div>
             </div>
             <div className="campaignSection">
-              <h1>{'Description'}</h1>
+              <h1>Description</h1>
               <input
                 type="text"
-                className="campaignNameTextBox"
+                className="campaignTextBox"
                 placeholder="Let viewers get a rough idea of your story!"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                maxLength="400"
               />
+              <div className="wordCount"> <div>{description.length}/400</div> </div>
             </div>
             <div className="campaignSection">
               <h1>{'Privacy'}</h1>
@@ -183,7 +189,7 @@ export default function CreateCampaign() {
           </div>
 
           <Confirmation
-            message="delete Campaign"
+            message="delete this?"
             state={deleting}
             setState={setDeleting}
             action={() => {

@@ -15,18 +15,18 @@ export async function fetchSelf(){
 //a Wrapper that lets me perform useEffect actions first before any other component can
 export default function AppWrapper({ children }) {
     
-  useQuery({
-    queryKey: ['self'],
-    queryFn: fetchSelf,
-    staleTime: Infinity,
-    refetchOnMount: false,
-    retry: false,
-  });
+  // useQuery({
+  //   queryKey: ['self'],
+  //   queryFn: fetchSelf,
+  //   staleTime: Infinity,
+  //   refetchOnMount: false,
+  //   retry: false,
+  // });
 
   const location = useLocation();
 
   //paths to ignore fetching data and showing load bar
-  const fetchlessPaths = [/^\/login$/, /^\/register$/]
+  const fetchlessPaths = [/^\/login$/, /^\/register$/, /^\/verify\/[^/]+$/];
 
   //starts load bar and checks if a user currently exists before fetching user data
   useEffect(() => {

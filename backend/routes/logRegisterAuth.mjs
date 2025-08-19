@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import express from 'express';
 import passport from 'passport';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 // import rateLimit from 'express-rate-limit';
 import '../db.mjs';
 
@@ -24,11 +26,11 @@ const protectedApiPatterns = [
   /^\/campaigns$/,
   /^\/campaigns\/[^/]+$/,
   /^\/campaigns\/[^/]+\/elements$/,
-  /^\/thumbnails\/[^/]+$/
+  /^\/thumbnails\/[^/]+$/,
 ];
 
 //routes that users should be able to access at all times
-const unprotectedPatterns = [/^\/login$/, /^\/register$/];
+const unprotectedPatterns = [/^\/login$/, /^\/register$/, /^\/verify\/[^/]+$/];
 
 //don't redirect any requests for assets and such
 const ignoredPatterns = [/^\/(assets|images)\//];
@@ -55,8 +57,7 @@ function isAuthenticated(req, res, next) {
       // console.log("protected API path allowed", path);
       return next();
     } else {
-      // console.log("protected API path forbidden, redirecting to login");
-      return res.status(401).json({ error: 'You must be logged in to access this resource.' });
+      return res.status(401).json({ error: 'You must be logged in to access this resource.'});
     }
   }
     else if (isUnprotected) {
@@ -122,30 +123,102 @@ router.post('/logout', (req, res) => {
   });
 });
 
-//localPassportMongoose's register method will hash a password for me, check if the user already exists, then make a user automatically
-//If registration is succesful, we authenticate the user
-router.post('/register', function (req, res) {
-  User.register(
-    new User({ userName: req.body.username, email: req.body.email }),
-    req.body.password,
-    (err, user) => {
-      if (err) {
-        console.log(user);
-        return res.status(409).json({ error: "There was an issue with your inputs" });
-      } else {
-        passport.authenticate('local')(req, res, function () {
-          return res.json({});
-        });
-      }
+//register a new user and make sure to verify them through email
+router.post('/register', async function (req, res) {
+  try{
+    const {username, email, password} = req.body;
+    console.log(username, email);
+
+    //find if the username or email already exists
+    const existingUserName = await User.findOne({userName: username});
+    const existingEmail = await User.findOne({email: email});
+    if (existingUserName){
+      console.log("Username already exists");
+      return res.status(409).json({ error: 'This username is already taken.' });
     }
-  );
+    if (existingEmail){
+      console.log("Email already exists");
+      return res.status(409).json({ error: 'An account is already registered with this email.' });
+    }
+
+    //generate a verification token and send it to the user with an expiration time of 10 minutes
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const newUser = new User({
+      userName: username,
+      email: email,
+      verified: false,
+      verificationToken: verificationToken,
+      expireAt: new Date(Date.now() + 600000) //10 minutes
+    });
+
+    //temporarily register the user as unverified
+    await User.register(newUser, password);
+
+    //send an email to the user with a link to verify their account
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    //use domain if it exists otherwise use localhost
+    const verificationLink = process.env.DOMAIN ? `${process.env.DOMAIN}/verify/${verificationToken}` : `http://localhost:3000/verify/${verificationToken}`;
+
+    //Send the verification email stating its from a no-reply email address
+    await transporter.sendMail({
+      from: '"ParroTavern" <no-reply@ParroTavern.com>',
+      to: email,
+      subject: 'Verify your ParroTavern account',
+      text: `Please verify your account by clicking the following link: ${verificationLink}`,
+      html: `<p>Please verify your account by clicking the following link:</p><a href="${verificationLink}">${verificationLink}</a>`,
+    });
+
+    //Respond with no error
+    res.json({});
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
+  }
 });
+
+router.post('/verify/:token', async (req, res) => {
+  try {
+    const user = await User.findOne({
+      verificationToken: req.params.token,
+      expireAt: { $gt: Date.now() },
+    });
+
+    console.log(user);
+
+    if (!user) return res.status(404).json({ error: 'Problem' });
+
+    user.verified = true;
+    user.verificationToken = undefined;
+    user.expireAt = undefined;
+    await user.save();
+
+    req.logIn(user, function (err) {
+      if (err) console.log(err);
+      return res.json({});
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
+  }
+});
+
+
+
 
 //authenticates user and logs them in if correct
 //Passport automatically picks up req.body.username and password
 router.post('/login', function (req, res, next) {
   passport.authenticate('local', function (err, user) {
     if (user) {
+      console.log(user.pisspee);
+      if(user.verified === false) return res.status(403).json({ error: 'Please verify your email before logging in.' });
       req.logIn(user, function (err) {
         if (err) console.log(err);
         res.json({user: {userName: req.user.userName, email: req.user.email}});

@@ -126,13 +126,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(/^\/thumbnails\/[^/]+$/, (req, res, next) => {
-  console.log(path);
-  next();
-});
-
 //Serve thumbnails from the nonStatic directory
-app.use(/^\/thumbnails\/[^/]+$/, express.static(path.join(__dirname, 'nonStatic')));
+app.use("/thumbnails", express.static(path.join(__dirname, 'nonStatic', 'thumbnails')));
 
 //Serve static files WITH caching from the dist directory
 app.use(express.static(path.join(__dirname, '../frontend/dist'), {

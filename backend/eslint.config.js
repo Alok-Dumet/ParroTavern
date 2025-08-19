@@ -27,9 +27,6 @@ export default defineConfig([
       ...js.configs.recommended.rules,
       ...pluginReact.configs.recommended.rules,
 
-      // Prettier formatting
-      'prettier/prettier': 'error',
-
       // Optional: tweak rules
       'react/react-in-jsx-scope': 'off',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],

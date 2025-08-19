@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import {useQueryClient} from '@tanstack/react-query';
 import './css/loginRegister.css';
 
 export default function Login() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
@@ -26,7 +24,6 @@ export default function Login() {
 
     if (!res.error) {
       setError(null);
-      queryClient.invalidateQueries(['self']);
       navigate('/');
     } else {
       setError(res.error);

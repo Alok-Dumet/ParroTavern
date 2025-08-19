@@ -14,10 +14,11 @@
 .confirmation .confirmationContainer{
     position: relative;
     font-size: 0.9rem;
-    height: 20rem;
-    width: 40rem;
+    height: 10rem;
+    width: 35rem;
     display:flex;
     align-items: center;
+    border: 1rem solid #6a0dad;
     background-color: #7b1fa2;
     color:white;
     flex-direction: column;
@@ -25,10 +26,19 @@
     padding: 1rem;
 }
 
+.confirmation h1{
+  box-sizing: border-box;
+  position: absolute;
+  top: 1.6rem;
+  align-items: center;
+}
+
 .confirmation .buttonsContainer{
-    height: 20rem;
-    width: 40rem;
+    box-sizing: border-box;
+    width: 100%;
     display:flex;
+    position:absolute;
+    bottom: 0;
     justify-content: space-between;
     align-items: flex-end;
     color:white;

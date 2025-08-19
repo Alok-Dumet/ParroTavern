@@ -88,6 +88,11 @@ router.post('/campaigns', upload.single('image'), async (req, res) => {
         const file = req.file;
         let thumbnailUrl = null;
 
+        const campaignCheck = await Campaign.findOne({ campaignName: campaignName });
+        if (campaignCheck) {
+            return res.status(409).json({ error: 'Campaign name already exists.' });
+        }
+
         if (file) {
         thumbnailUrl = `/thumbnails/${file.filename}`;
         } else {
@@ -101,8 +106,8 @@ router.post('/campaigns', upload.single('image'), async (req, res) => {
             privacy: (isPrivate === "true"),
             dungeonMaster: req.user._id,
         });
-        await newCampaign.save();
 
+        await newCampaign.save();
         req.user.campaigns.push(newCampaign._id);
         await req.user.save();
         return res.json({});
@@ -123,6 +128,8 @@ router.delete("/campaigns/:campaignId", async (req, res)=>{
         const thumbnailPath = path.join(__dirname, '..', 'nonStatic', campaign.thumbnail);
         if (campaign.thumbnail !== '/images/default.png') fs.unlinkSync(thumbnailPath);
         await Campaign.deleteOne({ _id: campaignId });
+        req.user.campaigns = req.user.campaigns.filter(campaign => campaign.toString() !== campaignId);
+        await req.user.save();
 
         return res.json({});
     }

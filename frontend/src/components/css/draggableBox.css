@@ -119,6 +119,11 @@
     outline:none;
     resize: none;
   }
+  
+  .draggableBox .textInput::placeholder {
+    color: white;
+    opacity: 0.7;
+  }
 
   .textInput:focus {
     outline: 2px solid white;

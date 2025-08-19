@@ -8,6 +8,7 @@ import Login from './pages/login.jsx';
 import Register from './pages/register.jsx';
 import CreateCampaign from './pages/createCampaign.jsx';
 import CampaignPage from './pages/campaignPage.jsx';
+import Verification from './pages/verification.jsx';
 import Stars from './components/stars';
 
 import AppWrapper from './AppWrapper.jsx';
@@ -38,6 +39,7 @@ function App() {
             <Route path="/register" element={<Register/>}/>
             <Route path="/yourCampaigns" element={<CreateCampaign/>} />
             <Route path="/campaign/:userName/:campaignName" element={<CampaignPage/>}/>
+            <Route path="/verify/:token" element={<Verification/>}/>
           </Routes>
         </AppWrapper>
       </BrowserRouter>

@@ -37,6 +37,7 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   display:flex;
+  border: 0.3rem solid #4b0082;
   flex-direction: column;
   background-color:#6a0dad;
   border-radius: 1rem;
@@ -57,14 +58,31 @@
    filter: brightness(85%);
 }
 
-.campaignNameTextBox{
+.campaignTextBox{
   width: 100%;
   padding: 0.6rem;
   margin-top: 0.3rem;
-  border: 1px solid #ccc;
+  color:White;
+  background-color: #5a0099;
+  border: 2px solid #5a0099;
   border-radius: 8px;
   box-sizing: border-box;
   font-size: 1rem;
+}
+.campaignTextBox::placeholder{
+  color:white;
+  opacity: 0.7;
+}
+
+.campaignTextBox:focus{
+  outline: 2px solid #ffffff;
+  border-color: white;
+}
+
+.wordCount{
+  width:100%;
+  display:flex;
+  justify-content: flex-end;
 }
 
 .createButton, .campaignNameSubmit, .campaignNameClose {

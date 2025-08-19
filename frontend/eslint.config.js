@@ -33,9 +33,6 @@ export default [
       ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
 
-      // Prettier integration
-      'prettier/prettier': 'error',
-
       // Your custom rules
       'react/prop-types': 'off',
       'react/no-unescaped-entities': 'off',

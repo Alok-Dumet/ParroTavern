@@ -7,28 +7,38 @@ mongoose.plugin(slug);
 
 //Users that can create an account with general requirements like username, password, email, and optionally a cash App and references to campaigns they may or may not make
 const UserSchema = mongoose.Schema({
+  verified:{
+    type: Boolean,
+  },
+  verificationToken:{
+    type: String
+  },
+  expireAt: {
+    type: Date,
+    index: { expires: 0 }
+  },
   userName: {
     type: String,
-    unique: true, //I need to add a custom error message for this later
-    minLength: [5, 'Username must be atleast 5 characters long'],
-    maxLength: [36, 'Username cannot be greater than 36 characters'],
+    unique: [true, "this username is already taken"],
+    validate: {
+      validator: function(userInput) {
+                    return (/^[a-zA-Z0-9_]+$/.test(userInput)) && (userInput.length > 1) && (userInput.length < 33);
+                  },
+      message: userInput => `${userInput.value} is not a valid username! Usernames must be 2-32 characters long and contain only letters, numbers, and underscores.`
+    },
     required: [true, 'Username is required'],
   },
   email: {
     type: String,
-    minLength: [3, 'Email must be a valid'],
-    // validate: {validator}, //later implement validation to check if it has @ in it
+    unique: [true, "An account is already registered with this email"],
+    validate: {
+      validator: function(userInput) {
+                    return (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userInput)) && (userInput.length > 4) && (userInput.length < 255);
+                  },
+      message: userInput => `${userInput.value} is not a valid email! Email must be 5-254 characters long and contain only an @ and a period.`
+    },
     required: [true, 'Email is required'],
   },
-  cashApp: {
-    type: String, //not safe fake links can be added but IDK how to implement link validation
-  },
-  socialMedia: [
-    {
-      type: String, //not safe fake links can be added but IDK how to implement link validation
-      required: [true, 'DO NOT ADD AN EMPTY WEBSITE'],
-    },
-  ],
   campaigns: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -45,18 +55,15 @@ const UserSchema = mongoose.Schema({
 });
 
 //Campaign that has a name, renown (an upvote mechanic), password, and creator
-//Optionally there are/is description, tags (describe genre and other details), references to players, and references to campaign elements
-//Password is only needed if a user wishes to join the game and be able to interact with their character and etc. Viewers do not need password. Everyone can by default see elements the dungeon master allows
-//DungeonMaster does not need a password. Players are identified by logging in and have edit permissions on CampaignElements the DungeonMaster allows them to have
-//People who renown the campaign are tracked so that the same person cannot give multiple renown to a single campaign and so they can unlike later if they wish
 const CampaignSchema = mongoose.Schema({
   thumbnail: {
     type: String,
     required: [true, 'Thumbnail is required'],
+    default: "/images/default.png", // adjust path based on your setup
   },
   campaignName: {
     type: String,
-    maxLength: [69, 'Name cannot be greater than 69 characters'],
+    maxLength: [50, 'Name cannot be greater than 50 characters'],
     required: [true, 'Campaign Name is required'],
   },
   dungeonMaster: {
@@ -66,11 +73,11 @@ const CampaignSchema = mongoose.Schema({
   },
   privacy: {
     type: Boolean,
-    required: true,
+    required: [true, "Must state if private or public"],
   },
   description: {
     type: String,
-    maxLength: [420, 'Description cannot be greater than 420 characters'],
+    maxLength: [400, 'Description cannot be greater than 400 characters'],
   },
   mainStory: {
     type: String,
