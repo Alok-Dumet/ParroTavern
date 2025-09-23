@@ -86,13 +86,6 @@ An Example CampaignElement:
 
 ![list create](documentation/Edit_View_Campaign.png)
 
-
-
-## Site map
-
-Assume all pages can lead back to Home when pressing the ParroTavern Icon on the top left of each page
-![list create](documentation/Site_Map.png)
-
 ## User Stories or Use Cases
 1. as non-registered user, I can register a new account with the site
 2. as a user, I can log in to the site
