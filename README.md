@@ -7,6 +7,36 @@ Bored of playing the same old formulaic DND campaigns? Running out of ideas to p
 ParroTavern is a web app that allows users to digitally keep track of and share to the world their DND campaign (or any story similar to WattPad). Each user may choose to create a campaign and will be presented with options to fill it with campaign elements. These elements are designed to make following the story easy for anybody who views them, as they'll contain any pictures or information about the story a user may want to add. So, once logged in, a user may use ParroTaverns tools to make a easy and aesthetically pleasing page that contains a main story and helpful tabs on the side with extra details to make visualizing the story easier than ever. Of course, on the other hand, users can also freely view other people's campaigns. They can upvote their favorite campaigns and even support the creators by donating through any link the user provides!
 
 
+## Wireframes
+
+/parrotavern/log-in - page for logging in
+
+![list create](documentation/Log_In.png)
+
+/parrotavern/register - page for registering (We do have email verification set up!!!)
+
+![list create](documentation/Register.png)
+
+/parrotavern/home - page for viewing other peoples' campaigns
+
+![list create](documentation/Home.png)
+
+/parrotavern/profile/:username - page for viewing and changing account details
+
+![list create](documentation/Account.png)
+
+/parrotavern/my-campaigns - page for viewing your campaigns and choosing to delete or edit them
+
+![list create](documentation/My_Campaigns.png)
+
+/parrotavern/create-campaign - page for creating a campaign
+
+![list create](documentation/Create_Campaign.png)
+
+/parrotavern/campaign/:username/:campaignName - page for editing + viewing campaign
+
+![list create](documentation/Edit_View_Campaign.png)
+
 ## Data Model
 
 The application will store Users, Campaigns, and Campaign Elements (This can include Characters, Enemies, Locations, Items, and Story) 
@@ -56,35 +86,6 @@ An Example CampaignElement:
   images: ["totallyRealRordecaiImageURL"]
 }
 ```
-## Wireframes
-
-/parrotavern/log-in - page for logging in
-
-![list create](documentation/Log_In.png)
-
-/parrotavern/register - page for registering (We do have email verification set up!!!)
-
-![list create](documentation/Register.png)
-
-/parrotavern/home - page for viewing other peoples' campaigns
-
-![list create](documentation/Home.png)
-
-/parrotavern/profile/:username - page for viewing and changing account details
-
-![list create](documentation/Account.png)
-
-/parrotavern/my-campaigns - page for viewing your campaigns and choosing to delete or edit them
-
-![list create](documentation/My_Campaigns.png)
-
-/parrotavern/create-campaign - page for creating a campaign
-
-![list create](documentation/Create_Campaign.png)
-
-/parrotavern/campaign/:username/:campaignName - page for editing + viewing campaign
-
-![list create](documentation/Edit_View_Campaign.png)
 
 ## User Stories or Use Cases
 1. as non-registered user, I can register a new account with the site
