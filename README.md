@@ -98,5 +98,5 @@ An Example CampaignElement:
 10. as a dungeon master user or player user with permissions, I can edit a campaign
 11. as a user I can like a campaign //this feature along with subscribing or following a user may or may not be implemeneted
 
-## [Link to Initial Main Project File](app.mjs)
+## [Link to Initial Main Project File](backend/app.mjs)
 
