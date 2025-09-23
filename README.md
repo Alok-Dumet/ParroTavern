@@ -56,16 +56,13 @@ An Example CampaignElement:
   images: ["totallyRealRordecaiImageURL"]
 }
 ```
-
-## [Link to First Draft Schema](https://github.com/nyu-csci-ua-0467-001-002-spring-2025/final-project-Alok-Dumet/blob/master/db.mjs)(db.mjs) 
-
 ## Wireframes
 
 /parrotavern/log-in - page for logging in
 
 ![list create](documentation/Log_In.png)
 
-/parrotavern/register - page for registering
+/parrotavern/register - page for registering (We do have email verification set up!!!)
 
 ![list create](documentation/Register.png)
 
@@ -73,7 +70,7 @@ An Example CampaignElement:
 
 ![list create](documentation/Home.png)
 
-/parrotavern/account - page for viewing and changing account details
+/parrotavern/profile/:username - page for viewing and changing account details
 
 ![list create](documentation/Account.png)
 
@@ -85,7 +82,7 @@ An Example CampaignElement:
 
 ![list create](documentation/Create_Campaign.png)
 
-/parrotavern/slugForCampaignName - page for editing + viewing campaign (option to edit page will not be rendered if the user does not have permissions)
+/parrotavern/campaign/:username/:campaignName - page for editing + viewing campaign
 
 ![list create](documentation/Edit_View_Campaign.png)
 
