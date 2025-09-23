@@ -108,18 +108,5 @@ Assume all pages can lead back to Home when pressing the ParroTavern Icon on the
 10. as a dungeon master user or player user with permissions, I can edit a campaign
 11. as a user I can like a campaign //this feature along with subscribing or following a user may or may not be implemeneted
 
-## Research Topics
-
-* (5 points) Integrate user authentication
-    * Passport.js is an authentication middleware for Node.js that can support different kinds of authentication strategies
-    * Strategies include including username/password, JWT, and OAuth providers like Google and Facebook
-    * I am more interested, specifcally, in using passport-local for username/password authentication
-    * This is because it'll simplify authentication, so I won't have to write extra code to hash passwords, check for unique usernames, etc. 
-* (6 points) React.js
-    * React.js is a library for building user interfaces, specialized in creating reusable UI components
-    * It uses a virtual DOM to update and render web applications
-    * I'll use it because it'll let me add animations and let me drag and drop items (extremely necessary for users to easily look at the campaign elements)
-    * Modules for these are framer-motion and (funnily enough) react-dnd.
-
 ## [Link to Initial Main Project File](app.mjs)
 
