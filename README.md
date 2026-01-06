@@ -101,3 +101,6 @@ An Example CampaignElement:
 
 ## [Link to Initial Main Project File](backend/app.mjs)
 
+© 2026 Your Name. All rights reserved.
+This code is provided for viewing purposes only.
+No permission is granted to copy, modify, or distribute.
