@@ -23,7 +23,7 @@ import { router as createCampaignRouter } from './routes/createCampaign.mjs';
 //getting file path to app.mjs
 const __filename = fileURLToPath(import.meta.url);
 
-//Same __Filename but excluding file name (app.mjs)
+//Same as __filename but excluding file name (app.mjs)
 const __dirname = path.dirname(__filename);
 
 // -------------------------------------------------------------------------------- Creating Express App ------------------------------------------------------------------------------------
@@ -47,9 +47,9 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Authorization'],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 
