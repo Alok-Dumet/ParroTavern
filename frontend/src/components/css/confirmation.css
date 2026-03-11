@@ -1,0 +1,80 @@
+.confirmation{
+    display:flex;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(0, 0, 0, 0.5);
+    left: 0px;
+    right: 0px;
+    z-index: 9999999;
+}
+
+.confirmation .confirmationContainer{
+    position: relative;
+    font-size: 0.9rem;
+    height: 10rem;
+    width: 35rem;
+    display:flex;
+    align-items: center;
+    border: 1rem solid #6a0dad;
+    background-color: #7b1fa2;
+    color:white;
+    flex-direction: column;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.confirmation h1{
+  box-sizing: border-box;
+  position: absolute;
+  top: 1.6rem;
+  align-items: center;
+}
+
+.confirmation .buttonsContainer{
+    box-sizing: border-box;
+    width: 100%;
+    display:flex;
+    position:absolute;
+    bottom: 0;
+    justify-content: space-between;
+    align-items: flex-end;
+    color:white;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.confirmation .cancel{
+  background-color: #4b0082;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100px;
+  transition: background-color 0.3s;
+}
+
+.confirmation .confirm{
+  position:relative;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100px;
+  transition: background-color 0.3s;
+}
+
+.confirmation .cancel:hover{
+  background-color: #6a0dad;
+}
+
+.confirmation .confirm:hover{
+  background-color: rgb(166, 0, 0);
+}

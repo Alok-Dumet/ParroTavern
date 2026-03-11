@@ -1,0 +1,151 @@
+.moveable-line, .moveable-origin{
+  display: none;
+}
+
+.moveable-control{
+  opacity: 0
+}
+
+.draggableBox {
+    top: 30vh;
+    left: 30vw;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    width: 200px;
+    height: 250px;
+    min-width: 200px;
+    min-height: 250px;
+    background-color: #7b1fa2;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 0.5rem solid #4b0082;
+    border-top: 1rem solid #4b0082;
+    box-sizing: border-box;
+    cursor: default;
+
+    gap: 0.5rem;
+  }
+
+  .boxButtons{
+    display:flex;
+    position: absolute;
+    top: -1rem;
+    right: 0rem;
+  }
+
+  .closeButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:0.7rem;
+    width: 2rem;
+    padding-bottom: 0.3rem;
+    background-color: #4b0082;
+  }
+
+   .editButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:0.4rem;
+    width: 2rem;
+    padding-bottom: 0.6rem;
+    background-color: #4b0082;
+  }
+
+  .closeButton:hover{
+    background-color:red;
+  }
+
+  .editButton:hover{
+    background-color: #6a0dad
+  }
+  
+  .draggableBox .imageLabel{
+    height: 40%;
+    width: auto; /*auto adjusts to maintain aspect ratio*/
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .draggableBox .uploadedImage {
+    border-radius: 10px;
+    height:100%;
+    width:100%;
+    box-sizing: border-box;
+    transition: filter 0.3s;
+  }
+
+  .draggableBox .uploadedImage:hover{
+    filter: brightness(85%);
+    cursor: pointer;
+  }
+  
+  .draggableBox .imageUploadInput {
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px;
+    background-color: #4b0082;
+    color: white;
+    padding: 5px 15px;              /* Adjust padding for vertical balance */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .draggableBox .imageUploadInput:hover {
+    background-color: #6a0dad;
+  }
+  
+  .draggableBox .textInput {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 10px;
+    color:white;
+    border-color: #5a0099;
+    background-color: #5a0099;
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+    padding-left: 8px;
+    padding-right: 8px;
+    outline:none;
+    resize: none;
+  }
+  
+  .draggableBox .textInput::placeholder {
+    color: white;
+    opacity: 0.7;
+  }
+
+  .textInput:focus {
+    outline: 2px solid white;
+    border-color: white;
+  }
+
+  .draggableBox .textInput::-webkit-scrollbar-track, .draggableBox::-webkit-scrollbar-track{
+    background: transparent;
+    border-radius: 10px;
+  }
+
+  .draggableBox .textInput::-webkit-scrollbar, .draggableBox::-webkit-scrollbar{
+    width: 10px;
+  }
+  
+  .draggableBox .textInput::-webkit-scrollbar-thumb, .draggableBox::-webkit-scrollbar-thumb{
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  
+  .hidden{
+    display:none;
+  }

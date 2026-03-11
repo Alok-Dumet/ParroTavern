@@ -1,0 +1,55 @@
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+}
+
+.profileContainer::after{
+  content: "ParroTavern Rules Privacy Policy User Agreement ParroTavern, Inc. © 2025. All rights reserved.";
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: -3rem;
+  left: 0px;
+  height: 6rem;
+  width: 100%;
+}
+
+.profileContainer h1 {
+  margin-top: 100px;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.profileDetails {
+  display: flex;
+  flex-direction: column;
+  background-color: #7b1fa2;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 600px;
+  z-index: 0;
+  border: solid 0.3rem #5a0099;
+  gap: 1rem;
+}
+
+.profileDetails .userDetail{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+}
+
+.userDetail div{
+  width:min-content;
+}
+.hidden{
+  display: none;
+}
+  

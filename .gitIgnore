@@ -1,0 +1,6 @@
+cert/
+node_modules
+.env
+*.env
+*.swo
+*.swp
