@@ -89,7 +89,7 @@ app.set('trust proxy', 1);
 
 app.use(
   session({
-    secret: process.env.sessionKey ?? 'LocalSecret',
+    secret: process.env.sessionKey,
     resave: false,
     saveUninitialized: false,
     rolling: true,
