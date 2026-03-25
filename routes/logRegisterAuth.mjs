@@ -217,7 +217,6 @@ router.post('/verify/:token', async (req, res) => {
 router.post('/login', function (req, res, next) {
   passport.authenticate('local', function (err, user) {
     if (user) {
-      console.log(user.pisspee);
       if(user.verified === false) return res.status(403).json({ error: 'Please verify your email before logging in.' });
       req.logIn(user, function (err) {
         if (err) console.log(err);
