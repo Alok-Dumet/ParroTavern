@@ -23,7 +23,7 @@ import { router as createCampaignRouter } from './routes/createCampaign.mjs';
 //getting file path to app.mjs
 const __filename = fileURLToPath(import.meta.url);
 
-//Same __Filename but excluding file name (app.mjs)
+//Same as __filename but excluding file name (app.mjs)
 const __dirname = path.dirname(__filename);
 
 // -------------------------------------------------------------------------------- Creating Express App ------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ const app = express();
 
 // -------------------------------------------------------------------------------- Cross Origin Resource Sharing (CORS) ---------------------------------------------------------------------
 //NO ONE IS ALLOWED TO ACCESS MY API EXCEPT FOR THE FRONTEND, LOCALHOST, AND WHATEVER URL I USE FOR THE PRODUCTION VERSION OF THE FRONTEND
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'whateverURLParroTavernWillUse'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', process.env.URL];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -47,9 +47,9 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Authorization'],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 
@@ -77,19 +77,23 @@ app.disable("x-powered-by");
 app.use(compression());
 
 // -------------------------------------------------------------------------------- Accepted formats for body parsing ------------------------------------------------------------------------
-
 //Allows me to read req.body as jsons also
 app.use(express.json({ limit: '10mb' }));
 
+// -------------------------------------------------------------------------------- Set-up for dealing with Proxies ------------------------------------------------------------------------
+//informs my app to check the X-forwarded header in case a proxy is used (like a load balancer)
+app.set('trust proxy', 1);
+
 // -------------------------------------------------------------------------------- Session and Passport Session -----------------------------------------------------------------------------
 //Use an array of long randomly generate strings as the session key. Change these every so often to keep the session secure.
+
 app.use(
   session({
-    secret: process.env.sessionKey ?? 'LocalSecret',
+    secret: process.env.sessionKey,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 2, rolling: true }, //logout automatically after an hour of inactivity
-    // secure: true,                                       //Makes sure cookies are only sent over HTTPS
+    rolling: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 2}, //logout automatically after an hour of inactivity
   })
 );
 
@@ -151,7 +155,7 @@ app.get(/.*/, (req, res) => {
 
 // -------------------------------------------------------------------------------- Starting the Server -------------------------------------------------------------------------------------
 app.listen(process.env.PORT ?? 3000, () => {
-  console.log('backend is running on port: ' + process.env.PORT);
+  console.log('backend is running on port: ' + (process.env.PORT ?? 3000));
 });
 
 // -------------------------------------------------------------------------------- (Later implement SSL Certificates with HTTPS) -----------------------------------------------------------

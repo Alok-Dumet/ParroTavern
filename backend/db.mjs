@@ -4,6 +4,8 @@ import passportLocalMongoose from 'passport-local-mongoose';
 
 //lets me use slugs
 mongoose.plugin(slug);
+import dns from "node:dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 //Users that can create an account with general requirements like username, password, email, and optionally a cash App and references to campaigns they may or may not make
 const UserSchema = mongoose.Schema({
