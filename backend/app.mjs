@@ -89,6 +89,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 1000 * 60 * 60 * 2, rolling: true }, //logout automatically after an hour of inactivity
+    // secure: true,                                       //Makes sure cookies are only sent over HTTPS
   })
 );
 

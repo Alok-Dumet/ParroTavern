@@ -19,7 +19,7 @@ export default function Login() {
       body: JSON.stringify({ username: username, password: password }),
     };
 
-    let res = await fetch('/login', options);
+    let res = await fetch('feedforward.com/login', options);
     res = await res.json();
 
     if (!res.error) {

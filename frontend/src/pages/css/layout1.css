@@ -9,7 +9,7 @@ body {
 .mainContainer {
     display: flex;
     margin-top: 80px;
-    min-height: calc(100vh);
+    min-height: 100vh;
 }
   
 .leftContainer,
