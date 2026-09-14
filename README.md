@@ -26,6 +26,16 @@ be copied into `.env` to override defaults, such as enabling email
 verification. If the app is exposed publicly, also set a unique `SESSION_KEY`
 in `.env`.
 
+On startup, Docker also creates two demo accounts and a public campaign for
+each if they do not already exist:
+
+- `tavernkeeper` / `tavernkeeper-demo` — *The Missing Cask*
+- `storyteller` / `storyteller-demo` — *Lanterns at Dusk*
+
+The seed is idempotent: normal restarts preserve the existing database without
+duplicating these records. Running `docker compose down --volumes` removes the
+database, and the next startup creates the demo data again.
+
 ## Overview
 
 Bored of playing the same old formulaic DND campaigns? Running out of ideas to please your bored adventures? Or maybe you you just want to hear stories from people more interesting than you? Then grab a chair and Ale and listen to people regale at The Parro Tavern!

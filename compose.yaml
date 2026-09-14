@@ -17,11 +17,22 @@ services:
       EMAIL_PASS: ${EMAIL_PASS:-}
       DOMAIN: ${DOMAIN:-}
     depends_on:
-      mongodb:
-        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
     volumes:
       - app_uploads:/app/backend/nonStatic
     restart: unless-stopped
+
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["node", "seed.mjs"]
+    environment:
+      DSN: mongodb://mongodb:27017/LocalParroTavern
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   mongodb:
     image: mongo:8.0
