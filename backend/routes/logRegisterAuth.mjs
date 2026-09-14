@@ -9,6 +9,7 @@ import '../db.mjs';
 //my user model
 const User = mongoose.model('User');
 const Campaign = mongoose.model('Campaign');
+const emailVerificationRequired = process.env.EMAIL_VERIFICATION_REQUIRED === 'true';
 
 //my express router
 const router = express.Router();
@@ -123,7 +124,8 @@ router.post('/logout', (req, res) => {
   });
 });
 
-//register a new user and make sure to verify them through email
+// Register a user. Local installations do not require SMTP or email verification
+// unless EMAIL_VERIFICATION_REQUIRED=true is explicitly configured.
 router.post('/register', async function (req, res) {
   try{
     const {username, email, password} = req.body;
@@ -141,20 +143,33 @@ router.post('/register', async function (req, res) {
       return res.status(409).json({ error: 'An account is already registered with this email.' });
     }
 
-    //generate a verification token and send it to the user with an expiration time of 10 minutes
-    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationToken = emailVerificationRequired ? crypto.randomBytes(32).toString('hex') : undefined;
     const newUser = new User({
       userName: username,
       email: email,
-      verified: false,
+      verified: !emailVerificationRequired,
       verificationToken: verificationToken,
-      expireAt: new Date(Date.now() + 600000) //10 minutes
+      expireAt: emailVerificationRequired ? new Date(Date.now() + 600000) : undefined, // 10 minutes
     });
 
     //temporarily register the user as unverified
     await User.register(newUser, password);
 
-    //send an email to the user with a link to verify their account
+    if (!emailVerificationRequired) {
+      return req.logIn(newUser, (err) => {
+        if (err) {
+          console.log(err.message);
+          return res.status(500).json({ error: 'Unable to start a session.' });
+        }
+        return res.json({ user: { userName: newUser.userName, email: newUser.email } });
+      });
+    }
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      return res.status(503).json({ error: 'Email verification is enabled, but SMTP credentials are not configured.' });
+    }
+
+    // Send an email to the user with a link to verify their account.
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -215,12 +230,27 @@ router.post('/verify/:token', async (req, res) => {
 //authenticates user and logs them in if correct
 //Passport automatically picks up req.body.username and password
 router.post('/login', function (req, res, next) {
-  passport.authenticate('local', function (err, user) {
+  passport.authenticate('local', async function (err, user) {
+    if (err) {
+      console.log(err.message);
+      return res.status(500).json({ error: 'Something went wrong on the Server. We apologize' });
+    }
     if (user) {
-      if(user.verified === false) return res.status(403).json({ error: 'Please verify your email before logging in.' });
+      // Accounts made before local verification was disabled can use the app too.
+      if (user.verified === false && !emailVerificationRequired) {
+        user.verified = true;
+        user.verificationToken = undefined;
+        user.expireAt = undefined;
+        await user.save();
+      } else if (user.verified === false) {
+        return res.status(403).json({ error: 'Please verify your email before logging in.' });
+      }
       req.logIn(user, function (err) {
-        if (err) console.log(err);
-        res.json({user: {userName: req.user.userName, email: req.user.email}});
+        if (err) {
+          console.log(err.message);
+          return res.status(500).json({ error: 'Unable to start a session.' });
+        }
+        return res.json({user: {userName: req.user.userName, email: req.user.email}});
       });
     } else {
       res.status(401).json({ error: 'Your login or password is incorrect.' });

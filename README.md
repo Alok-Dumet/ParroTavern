@@ -1,5 +1,31 @@
 # ParroTavern
 
+## Run locally with Docker
+
+Docker Compose starts the Express application and a local MongoDB instance.
+No configuration is needed for a local install; from the project root, run:
+
+```bash
+docker compose up --build
+```
+
+Open http://localhost:3000. MongoDB is available to local database clients at
+`mongodb://localhost:27017/LocalParroTavern`; the application connects to it
+internally at `mongodb://mongodb:27017/LocalParroTavern`.
+
+Data is retained in named Docker volumes. To stop the stack, run `docker compose down`.
+To also remove all local database and uploaded-thumbnail data, run:
+
+```bash
+docker compose down --volumes
+```
+
+Email verification is disabled by default so anyone can register and use the
+local app immediately. The optional `.env.example` documents settings that can
+be copied into `.env` to override defaults, such as enabling email
+verification. If the app is exposed publicly, also set a unique `SESSION_KEY`
+in `.env`.
+
 ## Overview
 
 Bored of playing the same old formulaic DND campaigns? Running out of ideas to please your bored adventures? Or maybe you you just want to hear stories from people more interesting than you? Then grab a chair and Ale and listen to people regale at The Parro Tavern!

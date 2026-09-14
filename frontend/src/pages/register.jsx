@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './css/loginRegister.css';
 
 export default function Register() {
+  const navigate = useNavigate();
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
   let [email, setEmail] = useState('');
@@ -19,13 +21,17 @@ export default function Register() {
       body: JSON.stringify({ username: username, password: password, email: email }),
     };
 
-    let res = await fetch('/register', options);
-    res = await res.json();
+    const response = await fetch('/register', options);
+    const res = await response.json();
 
     if (!res.error) {
       setError(null);
-      setVerifyNotif(true);
-      setTimeout(() => {setVerifyNotif(false);}, 10000);
+      if (res.user) {
+        navigate('/');
+      } else {
+        setVerifyNotif(true);
+        setTimeout(() => {setVerifyNotif(false);}, 10000);
+      }
     } else {
       setError(res.error);
     }

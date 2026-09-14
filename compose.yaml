@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DSN: mongodb://mongodb:27017/LocalParroTavern
+      PORT: "3000"
+      URL: http://localhost:3000
+      # These defaults make a fresh local install runnable with no .env file.
+      # Docker Compose automatically uses values from .env when it is present.
+      SESSION_KEY: ${SESSION_KEY:-parrotavern-local-session-key}
+      EMAIL_VERIFICATION_REQUIRED: ${EMAIL_VERIFICATION_REQUIRED:-false}
+      EMAIL_USER: ${EMAIL_USER:-}
+      EMAIL_PASS: ${EMAIL_PASS:-}
+      DOMAIN: ${DOMAIN:-}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - app_uploads:/app/backend/nonStatic
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.adminCommand(\"ping\").ok' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+volumes:
+  app_uploads:
+  mongodb_data:

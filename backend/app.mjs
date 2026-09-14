@@ -89,7 +89,9 @@ app.set('trust proxy', 1);
 
 app.use(
   session({
-    secret: process.env.sessionKey,
+    // A default keeps local and Docker installs zero-configuration. Override
+    // SESSION_KEY through the environment before exposing the app publicly.
+    secret: process.env.SESSION_KEY ?? process.env.sessionKey ?? 'parrotavern-local-session-key',
     resave: false,
     saveUninitialized: false,
     rolling: true,
@@ -104,7 +106,9 @@ app.use(passport.session());
 // -------------------------------------------------------------------------------- Logging pages accessed for local testing -----------------------------------------------------------------
 //logs all pages accessed
 app.use((req, res, next) => {
-  console.log(req.path, req.body ? req.body : "");
+  const requestBody = { ...req.body };
+  if ('password' in requestBody) requestBody.password = '[redacted]';
+  console.log(req.path, requestBody);
   // logger.info(`${req.path} was visited`, req.body ? req.body : "");
   next();
 });
@@ -162,4 +166,3 @@ app.listen(process.env.PORT ?? 3000, () => {
 // https.createServer(sslOptions, app).listen(process.env.PORT ?? 3000, () => {
 //   console.log('HTTPS server is running on port: ' + process.env.PORT);
 // });
-
